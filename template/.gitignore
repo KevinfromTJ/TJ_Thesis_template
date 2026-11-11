@@ -1,0 +1,11 @@
+.output/
+.proto/
+.cursor/
+# macOS
+.DS_Store
+# Local build output
+output/*
+
+# If want track the pdf files, uncomment the following line
+# !output/thesis/thesis.pdf
+# !output/thesis_anonymous/thesis_anonymous.pdf
