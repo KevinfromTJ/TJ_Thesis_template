@@ -1,0 +1,66 @@
+# 使用说明
+
+这是以 `huang-shuai-dev/TongjiThesis_Proto@9362cdd` 为底稿的本地修订版。已经对照 2025 年 10 月校级指南、原始 Word 示例分节数据和上游 issues 核对。详细依据在 [比对报告](../audit/COMPARISON.md)。上游作者和历史说明保存在 [UPSTREAM_README.md](UPSTREAM_README.md)；它描述的是修改前的版本，使用方法以本文件为准。
+
+## 开始写作
+
+1. 在 `thesis.tex` 第一行选择学位：`degree=master` / `doctor`；学位类型：`degreetype=academic` / `profession`。当前示例沿用底稿的专业型硕士。`spine.tex` 也应采用同样的学位设置。
+2. 修改 `data/cover.tex` 的中英文题目、作者、学号、学院、学科和导师。`cmajorfirst` 等中英文字段分别填写；英文学位名称 `edegree` 必须按实际授予学位显式配置，类文件的工科默认值不适合所有专业。
+3. 替换 `data/chap01.tex` 至 `chap03.tex`，按需增加章节并在主文件中加入 `\tongjiinputfile{...}`。正文和引用均为排版占位示例。
+4. 修改 `ref/refs.bib`，用 `\cite{key}` 引用。采用 Biber，不是 BibTeX；PDF 中默认只列实际引用的文献。电子文献保留 URL，作者缩写和析出分隔符由国标样式处理。
+5. 修改附录、致谢、简历。`cassosupervisor={}` 等空值会移除可选封面行；有副导师/行业导师时才填写。基金内容也默认为空。
+6. 最终签署声明页，可打印模板末页后签名；若需使用学院提供的原版表单，替换为该表单签署扫描件。扫描件自身的尺寸、页码必须人工核对。
+
+封面之前单面、摘要起双面：默认 `twoside`，两张封面各带一个空白背面（PDF 第 2、4 页）；正文不额外强制从奇数页开始。打印时 A4、100% 实际尺寸，不使用“适合页面”缩放。校级指南要求左右同为 31.7 mm、装订线为 0，不增加镜像内边距或装订偏移。
+
+## 编译
+
+需要 XeLaTeX、latexmk、Biber 和完整常用 TeX 宏包；本机 TeX Live 2022 / Biber 2.17 已验证。字体从 `fonts/` 直接读取。
+
+```bash
+./build.sh             # output/thesis.pdf
+./build.sh anonymous   # output/thesis_anonymous.pdf
+./build.sh all         # 上述两种
+./build.sh spine       # output/spine.pdf：独立书脊排版页
+./build.sh watch       # 持续编译
+./build.sh clean       # 清理辅助文件，保留 PDF
+```
+
+统一使用 `.latexmkrc`。Biber 或 XeLaTeX 出错时构建返回失败，不以旧 PDF 是否存在判断成功。PDF 的生成时间应与这次成功编译一致。
+
+书脊采用仿宋四号、16 bp 行距、上下约 50 mm。独立输出便于印制单位按论文厚度处理；若学院要求把书脊页插入论文电子版，可在英文封面之后按学院流程加入。长题目、英文题目和特殊符号需要检查竖排效果。
+
+隐名入口会留空被 `\blindreviewfield{...}` 包裹的封面字段，并跳过致谢、简历和声明。正文中的姓名、自引、项目号、图片标识、附录等仍由作者按送审要求处理；自动核验只证明本仓库样例的已知字段已隐藏。
+
+## 布局与可选项
+
+- A4；上/下 25.4 mm，左/右 31.7 mm；版心 146.6 × 246.2 mm。
+- 页眉盒顶距纸顶 20 mm。`headheight=5mm`，`headsep=0.4mm`；不要改回上游的 5.4 mm。
+- 页脚盒底距纸底 15 mm。页码使用宋体 10.5 bp，显式盒深 2.1 bp；`footskip=10.4mm-2.1bp`。文字基线距底约 15.741 mm。
+- 正文 12 bp / 20 bp 行距；目录 12 bp / 18 bp；参考文献、符号说明、简历 10.5 bp / 16 bp。
+- 章标题 16 bp、段前 24 bp、段后 18 bp；节标题 15/14/12 bp，段后 6 bp。
+- `newstyle=true` 和 `bibtype=numeric` 是校级配置；旧式页眉及作者年份制仅为兼容保留，不作为本次校级合规配置。
+- 符号表、图表索引默认注释，按论文实际需要启用。符号很多时应加入符号说明。
+- 同等学力与涉密论文未覆盖本次正式/隐名成品验证，需按对应官方封面单独核对。不要把普通学硕/专硕示例直接用于其他封面类型。
+
+## 复测
+
+```bash
+./build.sh all
+./build.sh spine
+latexmk -outdir=output/tests tests/layout.tex
+python scripts/verify_layout.py
+latexmk -outdir=output/tests tests/cover-variants.tex
+```
+
+Python 核验需 `pymupdf`。`tests/layout.tex` 含刻意扩展的摘要、目录、参考文献、致谢、简历，并使用虚构的测试文献；这些不会进入主论文。脚本检查真实 PDF 的行距、缩进、字号/字体、页眉页码、引用和附录编号，并通过栅格检查左右边界；结果写入 `output/verification.json`。
+
+继承的字体文件归原权利人所有；保留上游字体说明。此修订是可复核的第三方排版实现，不是学校官方发布的 LaTeX 模板。Word 的字体行盒、页顶段距抑制、浮动文本框与 TeX 不完全相同，声明页和封面的逐像素一致性未作保证。
+
+## 本机新版 TeX Live（2026-11-11 补充）
+
+已找到并使用独立安装的 TeX Live 2026：`/data1_temp/chenjuntao/texlive/2026/bin/x86_64-linux`。本机推荐 `./build-2026.sh all`，输出 `output/texlive2026/`，不会与旧版辅助文件混用。
+
+XeLaTeX 是实际编译引擎，TeX Live 是包含该引擎和宏包的发行版，latexmk 只是构建调度器；`latexmk` 不意味着使用 pdfLaTeX。新版日志确认 `preloaded format=xelatex`，参考文献使用同一发行版的 Biber 2.22。
+
+[用于人工对照的两份 PDF 与页序号表](../compare/README.md)。旧 `build.sh` 使用当前 PATH，未修改系统默认环境。

@@ -1,0 +1,20 @@
+% 单独生成书脊排版页；装订时由印制单位按论文厚度裁切/置入封套。
+\documentclass[degree=master,degreetype=profession]{tongjithesis}
+\newcommand{\blindreviewfield}[1]{#1}
+\input{data/cover}
+\geometry{top=50mm,bottom=50mm,left=31.7mm,right=31.7mm}
+\begin{document}
+\pagestyle{empty}
+\makeatletter
+\noindent\makebox[\textwidth][c]{%
+  \begin{minipage}[t][\textheight][t]{14bp}
+    \centering\fangsong\bfseries\fontsize{14bp}{16bp}\selectfont
+    \parindent=0pt\parskip=0pt
+    \tongji@ctitle\par
+    \vfill
+    \tongji@cauthor\par
+    \vfill
+    同济大学\par
+  \end{minipage}}
+\makeatother
+\end{document}

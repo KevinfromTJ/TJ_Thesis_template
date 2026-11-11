@@ -1,119 +1,67 @@
-# TongjiThesis (最后更新: 2026/06/03)
-## 1. 总览
-同济大学硕博士论文LaTeX模板修订版, 绝赞更新中!
+# 使用说明
 
-本次修改的发起者：
-* [WYQY](https://github.com/wyqy)
+这是以 `huang-shuai-dev/TongjiThesis_Proto@9362cdd` 为底稿的本地修订版。已经对照 2025 年 10 月校级指南、原始 Word 示例分节数据和上游 issues 核对。本次视觉更正依据在 [Adobe/Word核对报告](../audit/adobe-review/REVIEW.md)，早期选型记录见 [旧报告（部分已更正）](../audit/COMPARISON.md)。上游作者和历史说明保存在 [UPSTREAM_README.md](UPSTREAM_README.md)；它描述的是修改前的版本，使用方法以本文件为准。
 
-特别致谢：
-* [hushidong/biblatex-gb7714-2015](https://github.com/hushidong/biblatex-gb7714-2015) 提供的参考文献宏包
-* [TongjiThesis](https://github.com/marquistj13/TongjiThesis) 给出的初始Tongji模板
+## 开始写作
 
-历史贡献者列表: [请点击这里](https://github.com/marquistj13/TongjiThesis/graphs/contributors)
+1. 在 `thesis.tex` 第一行选择学位：`degree=master` / `doctor`；学位类型：`degreetype=academic` / `profession`。当前示例沿用底稿的专业型硕士。`spine.tex` 也应采用同样的学位设置。
+2. 修改 `data/cover.tex` 的中英文题目、作者、学号、学院、学科和导师。`cmajorfirst` 等中英文字段分别填写；英文学位名称 `edegree` 必须按实际授予学位显式配置，类文件的工科默认值不适合所有专业。
+3. 替换 `data/chap01.tex` 至 `chap03.tex`，按需增加章节并在主文件中加入 `\tongjiinputfile{...}`。正文和引用均为排版占位示例。
+4. 修改 `ref/refs.bib`，用 `\cite{key}` 引用。采用 Biber，不是 BibTeX；PDF 中默认只列实际引用的文献。电子文献保留 URL，作者缩写和析出分隔符由国标样式处理。
+5. 修改附录、致谢、简历。`cassosupervisor={}` 等空值会移除可选封面行；有副导师/行业导师时才填写。基金内容也默认为空。
+6. 最终签署声明页，可打印模板末页后签名；若需使用学院提供的原版表单，替换为该表单签署扫描件。扫描件自身的尺寸、页码必须人工核对。
 
-主要参考资料：
-* [ThuThesis](https://github.com/tuna/thuthesis), [ustcthesis](https://github.com/ustctug/ustcthesis);
-* [TongjiThesis @ Tongji LUG, 2014](https://sourceforge.net/projects/tongjithesis/);
-* [TongjiThesis @ marquistj13, CNchence, Wenda, 2020](https://github.com/marquistj13/TongjiThesis);
-* ``Copilot`` \& ``texdoc`` \& ``tex.stackexchange.com``.
+封面之前单面、摘要起双面：默认 `twoside`，两张封面各带一个空白背面（PDF 第 2、4 页）；正文不额外强制从奇数页开始。打印时 A4、100% 实际尺寸，不使用“适合页面”缩放。校级指南要求左右同为 31.7 mm、装订线为 0，不增加镜像内边距或装订偏移。
 
-免责声明:
-* 本模板附带的字体仅用于`同济大学硕博士论文LaTeX模板`效果展示和`同济大学学位论文`撰写, 版权归属原作者所有, 若需使用请自行获取字体授权
+## 编译
 
-## 2. 更新历史
+需要 XeLaTeX、latexmk、Biber 和完整常用 TeX 宏包；本轮采用 TeX Live 2026 / Biber 2.22，推荐 `./build-2026.sh all`；下列 `build.sh` 仅使用当前PATH，旧发行版未重新执行本轮校准验证。字体从 `fonts/` 直接读取。
 
-- _(20260603) ver v1.10.0_
-  - **封面**
-    - 结果：封面版式与20251031 写作示例一致。
-    - 细节：重排中英文封面（Logo 区、学位类型与标题字号、信息行左对齐、学号等数字仿宋、日期底部对齐）；更新校徽图。
-    - 涉及：`tongjithesis.cls`，`figures/tongji-whole-logo.pdf`。
-  - **声明页**
-    - 结果：原创性声明与授权书页面与20251031 写作示例一致，且不出现多余页眉页脚。
-    - 细节：独立页边距，调整标题/正文字号、行距与签名区排版；`statements` 环境改为空白页样式。
-    - 涉及：`data/statements.tex`，`tongjithesis.cls`。
-  - **盲审 / 隐名版**
-    - 结果：一条命令生成隐名审稿 PDF，无需手工删改个人信息。
-    - 细节：编译 `thesis_anonymous.tex` 启用盲审；`\blindreviewfield`、`\blindreviewblank` 在封面/致谢/简历等处留空；盲审版跳过声明页。
-    - 涉及：`thesis_anonymous.tex`，`thesis.tex`，`data/cover.tex`，`data/ack.tex`，`data/resume.tex`。
-  - **编译**
-    - 结果：本地快速编译正式版与隐名版，并保持项目根目录整洁。
-    - 细节：`build.sh` 支持正式版/隐名版/清理/打开 PDF（输出到 `output/`）；使用方法见 ``./build.sh help``；`.latexmkrc` 配置 latexmk + XeLaTeX + Biber（输出到 `.output/`，与 VSCode 一致）。
-    - 涉及：`build.sh`，`.latexmkrc`。
-  - **字体**
-    - 结果：宋体加粗效果更接近 Word 与校方 PDF，无需额外粗体字体文件。
-    - 细节：为 `zhsong` 族启用 `AutoFakeBold=2.5`。
-    - 涉及：`ctex-fontset-tongji.def`。
-  - **参考文档**
-    - 结果：写作与改格式时对照研究生院最新说明。
-    - 细节：用 20251031 版写作参考指南与示例替换 2024 版 doc。
-    - 涉及：`ref/`（新增 20251031 doc，删除 2024 doc）。
-  - **仓库**
-    - 结果：避免混入本地编译产物与编辑器文件。
-    - 细节：忽略 `output/`、`.cursor/`、`.DS_Store` 等。
-    - 涉及：`.gitignore`。
+```bash
+./build.sh             # output/thesis.pdf
+./build.sh anonymous   # output/thesis_anonymous.pdf
+./build.sh all         # 上述两种
+./build.sh spine       # output/spine.pdf：独立书脊排版页
+./build.sh watch       # 持续编译
+./build.sh clean       # 清理辅助文件，保留 PDF
+```
 
-- _(20250305) ver 1.9.0_ 
-  - 更新标题和页眉的字体, 符合最新标准
-  - 将 `\mathcal` 字体恢复为默认, 便于使用 (感谢[@ssyuwang](https://github.com/ssyuwang)提醒);
-  - 删除过时的代码和宏包, 添加了一些宏包使用说明, 便于自行修改;
-  - **兼容性更改: 该版本将模板的 `cyrillic` 选项更新为 `encoding`, 需要使用 `fontenc` 宏包的高级用户请参照说明修改**;
-  - **兼容性更改: 该版本将所有非必需宏包的调用移动到了 `tongjiutils.sty`, 需要使用相关宏包的代码请对照更新`tongjiutils.sty`**.
+统一使用 `.latexmkrc`。Biber 或 XeLaTeX 出错时构建返回失败，不以旧 PDF 是否存在判断成功。PDF 的生成时间应与这次成功编译一致。
 
-## 3. 运行环境
+书脊采用仿宋四号、16 bp 行距、上下约 50 mm。独立输出便于印制单位按论文厚度处理；若学院要求把书脊页插入论文电子版，可在英文封面之后按学院流程加入。长题目、英文题目和特殊符号需要检查竖排效果。
 
-> #### ※ TeXLive 2024 完整安装 &nbsp;&nbsp;(tested on Windows 11 / Ubuntu 24.04);
-> #### ※ MacTeX  2024 完整安装 &nbsp;&nbsp;(tested on macOS 10.15);
-> #### ※ 其它基于 TeXLive 2024 的在线编译环境 &nbsp;&nbsp;(tested on Overleaf).
+隐名入口会留空被 `\blindreviewfield{...}` 包裹的封面字段，并跳过致谢、简历和声明。正文中的姓名、自引、项目号、图片标识、附录等仍由作者按送审要求处理；自动核验只证明本仓库样例的已知字段已隐藏。
 
-注意:
+## 布局与可选项
 
-- 本模板 __仅支持 XeLaTeX__, 如报错请首先检查编译命令是否正确;
-- 本模板附带了所需的中英文字体, 因而项目体积较大, 上传至在线编译环境时可删除 `.git` 目录减小体积
-- 本模板附带的字体 __不需要__ 安装到系统中, 模板会自行调用.
+- A4；上/下 25.4 mm，左/右 31.7 mm；版心 146.6 × 246.2 mm。
+- 页眉盒顶距纸顶 20 mm。`headheight=5mm`，`headsep=0.4mm`；不要改回上游的 5.4 mm。
+- 页脚盒底距纸底 15 mm。页码使用宋体 10.5 bp，显式盒深 2.1 bp；`footskip=10.4mm-2.1bp`。文字基线距底约 15.741 mm。
+- 正文 12 bp / 20 bp 行距；目录 12 bp / 18 bp；参考文献、符号说明、简历 10.5 bp / 16 bp。
+- 指南要求章标题16bp、段前24bp、段后18bp；节标题15/14/12bp、段后6bp。章标题和一级标题的CTeX行盒/skip已按Adobe基线校准，不能把源代码的skip值直接当作Word段落面板的段距。二、三级标题尚未完成同内容视觉校准。
+- 封面信息区31.2bp行距，日期固定；声明采用25.4/27.24bp行距及固定签名位置。它们来自Adobe/Word实际排版，不再按字号数值推断Word单倍/多倍行距。
+- `newstyle=true` 和 `bibtype=numeric` 是校级配置；旧式页眉及作者年份制仅为兼容保留，不作为本次校级合规配置。
+- 符号表、图表索引默认注释，按论文实际需要启用。符号很多时应加入符号说明。
+- 同等学力与涉密论文未覆盖本次正式/隐名成品验证，需按对应官方封面单独核对。不要把普通学硕/专硕示例直接用于其他封面类型。
 
+## 复测
 
-## 4. 使用方法
+```bash
+./build.sh all
+./build.sh spine
+latexmk -outdir=output/tests tests/layout.tex
+python scripts/verify_layout.py
+latexmk -outdir=output/tests tests/cover-variants.tex
+```
 
-### 4.1. 目录结构
+Python 核验需 `pymupdf`。`tests/layout.tex` 含刻意扩展的摘要、目录、参考文献、致谢、简历，并使用虚构的测试文献；这些不会进入主论文。脚本检查真实 PDF 的行距、缩进、字号/字体、页眉页码、引用和附录编号，并通过栅格检查左右边界；结果写入 `output/verification.json`。
 
-| 名称 | 解释 |
-| ---- | ---- |
-| thesis.tex | 主文档 |
-| ctex-fontset-tongji.def, <br>tongjithesis.cfg, <br>tongjithesis.cls | 必需模板文件 |
-| tongjiutils.sty | 可选模板文件 <br>如不需要可删除, 并注释掉  [thesis.tex @ L22](https://github.com/wyqy/TongjiThesis_Proto/blob/main/thesis.tex#L22 ) |
-| `data` 目录 | 存放各章对应的 .tex 文件 |
-| `figures` 目录 | 存放模板示例用到的图片文件 |
-| `fonts` 目录 | 存放模板用到的字体 ( 不需要手动安装 ) |
-| `ref` 目录 | 存放参考文献 refs.bib |
-| `.github ` 和 `.vscode` 目录 | 存放 GitHub Action 和 VSCode 配置文件, <br>如不使用可删除 |
+继承的字体文件归原权利人所有；保留上游字体说明。此修订是可复核的第三方排版实现，不是学校官方发布的 LaTeX 模板。Word 的字体行盒、页顶段距抑制、浮动文本框与 TeX 不完全相同，声明页和封面的逐像素一致性未作保证。
 
-### 4.3. 使用步骤
+## 本机新版 TeX Live（2026-11-11 补充）
 
-> #### ※ 请使用 XeLaTeX 编译 thesis.tex
-> &nbsp;&nbsp;&nbsp;&nbsp;建议使用 VSCode + SumatraPDF, 可调用模板提供的配置文件直接编译和预览
-> #### ※ 需要使用 ``\tongjiinputfile`` 命令导入 `data` 目录下的 .tex 文件 ( 用法详见 thesis.tex )
-> #### ※ 需要提前根据 ``\tongjiinputfile`` 命令的使用次数修改 ``\tongjimathversion`` 的参数 ( 位于 [thesis.tex @ L21](https://github.com/wyqy/TongjiThesis_Proto/blob/main/thesis.tex#L21) )
-> #### ※ 如果需要额外引入宏包和导言区命令, 请将其写入到 ``tongjiutils.sty`` 文件中
-> &nbsp;&nbsp;&nbsp;&nbsp;该文件仅用于示例文件的编译, 如不需要对应宏包/功能, 可自信修改或直接删除
-> #### ※ 本模板已根据最新的 ``写作示例`` 修订了页眉格式 ( 感谢 [@colderwater666](https://github.com/colderwater666) )
-> &nbsp;&nbsp;&nbsp;&nbsp;如果要返回到旧版, 请在第一行的参数部分设置 ``newstyle=false`` 还原
-> #### ※ 本模板配置了 GitHub Action 功能, 如果上传到 GitHub, 可实现自动编译并发布 Release ( [@xu-cheng/latex-action](https://www.github.com/xu-cheng/latex-action/tree/v3/) )
-> &nbsp;&nbsp;&nbsp;&nbsp;GitHub Actions 功能对于私有仓库 __不免费__, 若不需要该功能, 请删去 build-release.yml 文件中的 ``on`` 触发器 (位于 [build-release.yml @ L7-L13](https://github.com/wyqy/TongjiThesis_Proto/blob/main/.github/workflows/build-release.yml#L7-L13))
+已找到并使用独立安装的 TeX Live 2026：`/data1_temp/chenjuntao/texlive/2026/bin/x86_64-linux`。本机推荐 `./build-2026.sh all`，输出 `output/texlive2026/`，不会与旧版辅助文件混用。
 
+XeLaTeX 是实际编译引擎，TeX Live 是包含该引擎和宏包的发行版，latexmk 只是构建调度器；`latexmk` 不意味着使用 pdfLaTeX。新版日志确认 `preloaded format=xelatex`，参考文献使用同一发行版的 Biber 2.22。
 
-
-## 5. F&Q
-
-### 编译过程中出现未知的奇怪的错误怎么办
-若碰到奇怪的错误, 最好的方法就是： __清除所有临时文件, 重新编译__
-### 编译选项在哪里 / 如何自定义编译选项 (如修改输出目录)
-本模板默认使用 latexmk + xelatex 编译, 如果需要使用其他 LaTeX 编辑器 / 自定义编译选项 (如修改输出目录), 可查找项目中的 setting.json 文件 (用于 VSCode) 或 build-release.yml 文件 (用于 GitHub Actions)
-
-### 关于 author year 的引用
-本模板使用经过广泛验证和良好维护的引用样式包 [biblatex-gb7714-2015](https://github.com/hushidong/biblatex-gb7714-2015) 生成引用
-
-如有问题, 可尝试使用 tlmgr 包管理器安装该宏包的不同版本, 或者~~自行修补代码-~~
-
-### 关于参考文献 bib 的生成
-推荐使用 Zotero 进行文献管理和 bib 生成, 其中 bib 的生成推荐使用 Zotero 的 `Better Bib(La)TeX` 插件
-如果你也用 Zotero 管理文献的话, 可以参考 [这里](https://marquistj13.github.io/MyBlog/2018/05/zotero-export/#%E8%B0%83%E6%95%99better-bibtex-%E6%8F%92%E4%BB%B6%E7%94%9F%E6%88%90%E7%9A%84bib%E6%96%87%E4%BB%B6%E7%9A%84field) 的文献库导出设置, 这样就可以方便地将 bib 文件的 language 域删掉或另行处理, 
+[用于人工对照的两份 PDF 与页序号表](../compare/README.md)。旧 `build.sh` 使用当前 PATH，未修改系统默认环境。

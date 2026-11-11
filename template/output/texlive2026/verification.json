@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "geometry_mm": {
+    "paperwidth": 209.999999,
+    "paperheight": 296.999996,
+    "left": 31.699994,
+    "evenleft": 31.699994,
+    "textwidth": 146.60001,
+    "textheight": 246.200017,
+    "top": 25.399989,
+    "headtop": 20.000003,
+    "footerboxbottomfrombottom": 15.000002
+  },
+  "footer_baseline_from_bottom_mm": 15.740837,
+  "leading_bp": {
+    "body": 20,
+    "toc": 18,
+    "references": 16
+  },
+  "toc_indent_bp": [
+    24,
+    48
+  ],
+  "reference_hanging_indent_bp": 21,
+  "regression_pages": 19,
+  "headers": [
+    "摘要",
+    "摘要",
+    "Abstract",
+    "Abstract",
+    "目录",
+    "目录",
+    "第1章正文布局测试",
+    "第1章正文布局测试",
+    "第1章正文布局测试",
+    "第1章正文布局测试",
+    "第1章正文布局测试",
+    "参考文献",
+    "参考文献",
+    "参考文献",
+    "附录A编号检查",
+    "致谢",
+    "致谢",
+    "个人简历、在读期间发表的学术成果",
+    "个人简历、在读期间发表的学术成果"
+  ],
+  "footers": [
+    "I",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "VI",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13"
+  ],
+  "formal_pages": 15,
+  "anonymous_pages": 12,
+  "sample_anonymity": "PASS (only the included sample, not arbitrary user content)"
+}

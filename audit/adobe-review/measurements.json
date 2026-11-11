@@ -1,0 +1,56 @@
+[
+  {
+    "item": "chapter title",
+    "adobe_bp": 117.48,
+    "xelatex_bp": 117.475,
+    "delta_bp": -0.005
+  },
+  {
+    "item": "section title",
+    "adobe_bp": 172.32,
+    "xelatex_bp": 172.28,
+    "delta_bp": -0.04
+  },
+  {
+    "item": "chapter first text",
+    "adobe_bp": 204.48,
+    "xelatex_bp": 204.44,
+    "delta_bp": -0.04
+  },
+  {
+    "item": "abstract title",
+    "adobe_bp": 117.48,
+    "xelatex_bp": 117.475,
+    "delta_bp": -0.005
+  },
+  {
+    "item": "abstract first text",
+    "adobe_bp": 161.28,
+    "xelatex_bp": 161.28,
+    "delta_bp": 0.0
+  },
+  {
+    "item": "declaration title",
+    "adobe_bp": 90.12,
+    "xelatex_bp": 90.119,
+    "delta_bp": -0.001
+  },
+  {
+    "item": "declaration first text",
+    "adobe_bp": 129.72,
+    "xelatex_bp": 129.719,
+    "delta_bp": -0.001
+  },
+  {
+    "item": "authorization title",
+    "adobe_bp": 399.84,
+    "xelatex_bp": 399.835,
+    "delta_bp": -0.005
+  },
+  {
+    "item": "authorization first text",
+    "adobe_bp": 439.44,
+    "xelatex_bp": 439.435,
+    "delta_bp": -0.005
+  }
+]

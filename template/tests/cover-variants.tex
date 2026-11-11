@@ -1,0 +1,19 @@
+% Supply \CoverDegree and \CoverType through a wrapper for variant builds.
+\providecommand{\CoverDegree}{doctor}
+\providecommand{\CoverType}{academic}
+\edef\loadclass{\noexpand\documentclass[degree=\CoverDegree,degreetype=\CoverType]{tongjithesis}}
+\loadclass
+\newcommand{\blindreviewfield}[1]{#1}
+\input{data/cover}
+\tongjisetup{ctitle={用于检查封面换行与信息区域的较长中文论文题目},
+  etitle={A Longer English Thesis Title for Checking Cover Layout},
+  cdepartment={计算机科学与技术学院},
+  edepartment={School of Computer Science and Technology},
+  cassosupervisor={第二导师姓名 教授},
+  eassosupervisor={Professor Associate Supervisor},
+  cjointinstitution={联合培养单位名称},
+  ejointinstitution={Joint Training Institution}}
+\begin{document}
+\graphicspath{{figures/}}
+\frontmatter\makecover
+\end{document}

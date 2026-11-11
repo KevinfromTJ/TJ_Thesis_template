@@ -1,0 +1,15 @@
+{
+  "base": {
+    "repository": "https://github.com/huang-shuai-dev/TongjiThesis_Proto",
+    "commit": "9362cdd8a4d8e5a73c0ce3f7df7bf6ace597c20e",
+    "local": "upstream/TongjiThesis_Proto",
+    "role": "implementation base"
+  },
+  "comparison": {
+    "repository": "https://github.com/windforestfiremountain/TongjiThesisForCS",
+    "commit": "bd4f2553826081f4dfcc44e61a04881efd6d549e",
+    "local": "upstream/TongjiThesisForCS",
+    "role": "comparison only; includes 样例论文.pdf"
+  },
+  "visual_reference": "official_ref_2510/同济大学研究生学位论文写作参考示例_adobe转.pdf"
+}

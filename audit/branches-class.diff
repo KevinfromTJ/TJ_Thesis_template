@@ -1,0 +1,350 @@
+--- upstream/TongjiThesisForCS/tongjithesis.cls	2026-11-11 18:17:54.722285413 +0800
++++ upstream/TongjiThesis_Proto/tongjithesis.cls	2026-11-11 18:17:48.274267956 +0800
+@@ -257,9 +257,9 @@
+ 	bottom=25.4mm,
+ 	nomarginpar, % 即\marginparwidth=0pt and \marginparsep=0pt
+ 	left=31.7mm, % 注意left=right
+-	headheight=5mm,
++	headheight=5.5mm,
+ 	headsep=5.4mm,	% 页眉距顶端要求 2cm. 即25.4-20=5.4
+-	footskip=5.4mm}	%\footskip指的是正文最后一行距离页脚的距离(baseline)
++	footskip=5.5mm}	%\footskip指的是正文最后一行距离页脚的距离(baseline)
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 文章字体设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@@ -440,12 +440,12 @@
+ 
+ % 设置浮动对象和文字之间的距离
+ % 语法举例: {10pt plus 1.0pt minus 2.0pt} The plus and minus parts allow the space to stretch or shrink (the greater they are, the more it stretches or shrinks when needed).
+-\setlength{\floatsep}{12bp \@plus4pt \@minus1pt} % vertical distance between two floats
+-\setlength{\intextsep}{12bp \@plus4pt \@minus2pt} % distance between floats inserted inside the page text (using h) and the text proper. 即, 对于插入正文中的float, 这个\intextsep指的是图片上部和下部距离正文的距离
+-\setlength{\textfloatsep}{12bp \@plus4pt \@minus2pt}%  distance between floats on the top or the bottom and the text
++\setlength{\floatsep}{8bp \@plus0pt \@minus0pt} % vertical distance between two floats
++\setlength{\intextsep}{7bp \@plus0pt \@minus0pt} % distance between floats inserted inside the page text (using h) and the text proper. 即, 对于插入正文中的float, 这个\intextsep指的是图片上部和下部距离正文的距离
++\setlength{\textfloatsep}{14bp \@plus0pt \@minus0pt}%  distance between floats on the top or the bottom and the text
+ % 注: 清华的都设为20bp了, 而不是12bp, 我们tj的更紧凑一些
+ \setlength{\@fptop}{0bp \@plus1.0fil}
+-\setlength{\@fpsep}{12bp \@plus2.0fil}
++\setlength{\@fpsep}{8bp \@plus2.0fil}
+ \setlength{\@fpbot}{0bp \@plus1.0fil}
+ 
+ % 下面这组命令使浮动对象的缺省值稍微宽松一点, 从而防止浮动对象占据过多的文本页面, 
+@@ -474,7 +474,7 @@
+ \DeclareCaptionFont{tongji}{\wuhao[1.5]}
+ \captionsetup{labelformat=tongji,labelsep=tongji,font=tongji}
+ \captionsetup[table]{position=top,belowskip={12bp-\intextsep},aboveskip=6bp}
+-\captionsetup[figure]{position=bottom,belowskip={6bp-\intextsep},aboveskip=6bp}
++\captionsetup[figure]{position=bottom,belowskip=0bp,aboveskip=6bp}
+ \captionsetup[sub]{font=tongji,skip=6bp}
+ \renewcommand{\thesubfigure}{(\alph{subfigure})}
+ \renewcommand{\thesubtable}{(\alph{subtable})}
+@@ -830,7 +830,7 @@
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ \NewDocumentEnvironment{statements}{}{
+-  \pagestyle{tongji@footonly}}
++  \pagestyle{tongji@empty}}
+   {\clearpage}
+ 
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@@ -842,34 +842,49 @@
+ \newlength{\tongji@title@width} % 创建宽度变量
+ \def\tongji@put@title#1{\makebox{\hb@xt@ \tongji@title@width{#1}}} % 创建预设宽度变量和指定内容的盒子
+ 
++% 封面信息行: 单列左对齐，标题（两字扩展到四字宽）+ 冒号 + 内容
++\def\tongji@cover@label#1{%
++  \ifx#1\tongji@cauthortitle 姓\hspace{2\ccwd}名%
++  \else\ifx#1\tongji@cstudentnumbertitle 学\hspace{2\ccwd}号%
++  \else\ifx#1\tongji@cdepartmenttitle 学\hspace{2\ccwd}院%
++  \else #1%
++  \fi\fi\fi
++}
++% 封面信息内容：数字等 ASCII 也使用仿宋（否则默认走 Times）
++\def\tongji@cover@value#1{{\fontspec{FangSong.ttf}[Path={fonts/}]#1}}
++\def\tongji@cover@line#1#2{%
++  \tongji@cover@label{#1}\tongji@title@sep\tongji@cover@value{#2}%
++}
++
+ \newcommand{\chicover} % 中文封面
+ {
+   \begin{center}
+-    \parbox[t][1.8cm][t]{\textwidth}{
+-      \hspace*{11.2cm}
+-      \iftongji@secret{\sanhao\tongji@secret@title}
+-      \else\rule{1cm}{0cm} \fi % 是否显示密级
+-      \\[0.1cm]
+-      \iftongji@electronic{{\bfseries\itshape\kaishu\xiaosi\tongji@thesistype (打印时删除)}}
+-      \else\rule{1cm}{0cm} \fi % 是否显示打印时删除
+-    }
+-    \\[-.9cm]
+-    \parbox[t][1.8cm][t]{\textwidth}{
+-      \centering\hspace*{.3cm}
++    % \parbox[t][1.8cm][t]{\textwidth}{
++    %   \hspace*{11.2cm}
++    %   \iftongji@secret{\sanhao\tongji@secret@title}
++    %   \else\rule{1cm}{0cm} \fi % 是否显示密级
++    %   \\[0.1cm]
++    %   \iftongji@electronic{{\bfseries\itshape\kaishu\xiaosi\tongji@thesistype (打印时删除)}}
++    %   \else\rule{1cm}{0cm} \fi % 是否显示打印时删除
++    % }
++    % \\[-.9cm]
++    \parbox[t][2.6cm][t]{\textwidth}{
++      \centering
++      \hspace*{0.35cm}
+       \includegraphics[width=10cm]{tongji-whole-logo.pdf}
+     } % logo
+-    \\[-.6cm] 
++    \\[-.5cm] 
+     
+     \parbox[t][5cm][t]{\paperwidth-7cm}{
+       \begin{center}
+-        \erhao[1]{{\bfseries\lishu\tongji@capply}} \par
+-        \iftongji@academic{\sihao[1]{{\bfseries\lishu(学术学位)}}}
+-        \else \iftongji@profession{\sihao[1]{{\bfseries\lishu(专业学位)}}}
+-        \else \iftongji@equaleducation {\sihao[1]{{\bfseries\lishu(同等学力)}}}
+-        \fi \fi \fi \par
++        \erhao[1]{{\bfseries\lishu\tongji@capply}} \par\vskip 0.25cm
++        \iftongji@academic{\sanhao[1]{{\bfseries\lishu(学术学位)}}}
++        \else \iftongji@profession{\sanhao[1]{{\bfseries\lishu(专业学位)}}}
++        \else \iftongji@equaleducation {\sanhao[1]{{\bfseries\lishu(同等学力)}}}
++        \fi \fi \fi \par\vskip 0.5cm
+ 
+         \parbox[t]{\paperwidth-7cm}{\begin{center}\zihao{-4}\linespread{1.0}\selectfont
+-          \erhao[2]{\bfseries\sffamily\tongji@ctitle}% 中文标题
++          \erhao[1.4]{\bfseries\sffamily\tongji@ctitle}% 中文标题
+         \end{center}}
+         \par\vskip -0.3cm
+ 
+@@ -878,134 +893,129 @@
+         \end{center}}
+       \end{center}
+     }
+-    \par\vskip 3cm
++  \end{center}
+ 
+-    \hspace*{1.2cm}
+-    \parbox[t][11cm][t]{\textwidth}{
+-      {
+-        \fangsong\sanhao[1.5]
+-        \begin{center}
+-          \setlength{\extrarowheight}{4pt}
+-          \iftongji@profession% 专业学位
+-              \setlength{\tongji@title@width}{7em}
+-              \ifxetex \begin{tabular}{p{\tongji@title@width}@{}c@{\extracolsep{8pt}}p{7cm}l}
+-              \else \begin{tabular}{p{\tongji@title@width}c@{\extracolsep{8pt}}p{7cm}l} \fi
+-              \tongji@put@title{\tongji@cauthortitle}                & \tongji@title@sep & \tongji@cauthor            \\
+-              \tongji@put@title{\tongji@cstudentnumbertitle}         & \tongji@title@sep & \tongji@studentnumber      \\
+-              \tongji@put@title{\tongji@cdepartmenttitle}            & \tongji@title@sep & \tongji@cdepartment        \\
+-              \tongji@put@title{\tongji@csubjectcategorytitle}       & \tongji@title@sep & \tongji@csubjectcategory   \\
+-              \tongji@put@title{\tongji@cmajorfirsttitleprofession}  & \tongji@title@sep & \tongji@cmajorfirst        \\
+-              \tongji@put@title{\tongji@cmajorsecondtitleprofession} & \tongji@title@sep & \tongji@cmajorsecond       \\ 
+-              \tongji@put@title{\tongji@cresearchfieldtitle}         & \tongji@title@sep & \tongji@cresearchfield     \\
+-              \tongji@put@title{\tongji@csupervisortitle}            & \tongji@title@sep & \tongji@csupervisor        \\
+-              \ifx\tongji@cassosupervisor\@empty\else
+-                \tongji@put@title{\tongji@cassosupertitleprofession} & \tongji@title@sep & \tongji@cassosupervisor    \\
+-              \fi
+-              \ifx\tongji@cjointinstitution\@empty\else
+-                  \tongji@put@title{\tongji@cjointinstitutiontitle}  & \tongji@title@sep & \tongji@cjointinstitution  \\
+-              \fi
+-          \else% 学术学位
+-              \ifx\tongji@cassosupervisor\@empty \setlength{\tongji@title@width}{6em}
+-              \else \setlength{\tongji@title@width}{6em} \fi
+-              \ifxetex \begin{tabular}{p{\tongji@title@width}@{}c@{\extracolsep{8pt}}p{7cm}l}
+-              \else \begin{tabular}{p{\tongji@title@width}c@{\extracolsep{8pt}}p{7cm}l} \fi
+-              \tongji@put@title{\tongji@cauthortitle}           & \tongji@title@sep    & \tongji@cauthor              \\
+-              \tongji@put@title{\tongji@cstudentnumbertitle}    & \tongji@title@sep    & \tongji@studentnumber        \\
+-              \tongji@put@title{\tongji@cdepartmenttitle}       & \tongji@title@sep    & \tongji@cdepartment          \\
+-              \tongji@put@title{\tongji@csubjectcategorytitle}  & \tongji@title@sep    & \tongji@csubjectcategory     \\
+-              \tongji@put@title{\tongji@cmajorfirsttitle}       & \tongji@title@sep    & \tongji@cmajorfirst          \\
+-              \tongji@put@title{\tongji@cmajorsecondtitle}      & \tongji@title@sep    & \tongji@cmajorsecond         \\
+-              \tongji@put@title{\tongji@cresearchfieldtitle}    & \tongji@title@sep    & \tongji@cresearchfield       \\
+-              \tongji@put@title{\tongji@csupervisortitle}       & \tongji@title@sep    & \tongji@csupervisor          \\
+-              \ifx\tongji@cassosupervisor\@empty\else
+-                  \tongji@put@title{\tongji@cassosupertitle} & \tongji@title@sep & \tongji@cassosupervisor            \\
+-              \fi
+-              \ifx\tongji@cjointinstitution\@empty\else
+-                  \tongji@put@title{\tongji@cjointinstitutiontitle} & \tongji@title@sep & \tongji@cjointinstitution   \\
+-              \fi
+-        \fi
+-        \end{tabular}
+-      \end{center}}
+-    }
++  \par\vskip 2.6cm
+ 
+-    \begin{center}
+-      {\songti\sanhao\tongji@cdate}
+-    \end{center}
++  \hspace*{4.5\ccwd}
++  \parbox[t][11cm][t]{\textwidth}{
++    {
++      \fangsong\sanhao[1.5]
++      \setlength{\extrarowheight}{7.3pt}
++      \iftongji@profession% 专业学位
++          \begin{tabular}{l}
++          \tongji@cover@line{\tongji@cauthortitle}{\tongji@cauthor} \\
++          \tongji@cover@line{\tongji@cstudentnumbertitle}{\tongji@studentnumber} \\
++          \tongji@cover@line{\tongji@cdepartmenttitle}{\tongji@cdepartment} \\
++          \tongji@cover@line{\tongji@csubjectcategorytitle}{\tongji@csubjectcategory} \\
++          \tongji@cover@line{\tongji@cmajorfirsttitleprofession}{\tongji@cmajorfirst} \\
++          \tongji@cover@line{\tongji@cmajorsecondtitleprofession}{\tongji@cmajorsecond} \\
++          \tongji@cover@line{\tongji@cresearchfieldtitle}{\tongji@cresearchfield} \\
++          \tongji@cover@line{\tongji@csupervisortitle}{\tongji@csupervisor} \\
++          \ifx\tongji@cassosupervisor\@empty\else
++            \tongji@cover@line{\tongji@cassosupertitleprofession}{\tongji@cassosupervisor} \\
++          \fi
++          \ifx\tongji@cjointinstitution\@empty\else
++              \tongji@cover@line{\tongji@cjointinstitutiontitle}{\tongji@cjointinstitution} \\
++          \fi
++          \end{tabular}
++      \else% 学术学位
++          \begin{tabular}{l}
++          \tongji@cover@line{\tongji@cauthortitle}{\tongji@cauthor} \\
++          \tongji@cover@line{\tongji@cstudentnumbertitle}{\tongji@studentnumber} \\
++          \tongji@cover@line{\tongji@cdepartmenttitle}{\tongji@cdepartment} \\
++          \tongji@cover@line{\tongji@csubjectcategorytitle}{\tongji@csubjectcategory} \\
++          \tongji@cover@line{\tongji@cmajorfirsttitle}{\tongji@cmajorfirst} \\
++          \tongji@cover@line{\tongji@cmajorsecondtitle}{\tongji@cmajorsecond} \\
++          \tongji@cover@line{\tongji@cresearchfieldtitle}{\tongji@cresearchfield} \\
++          \tongji@cover@line{\tongji@csupervisortitle}{\tongji@csupervisor} \\
++          \ifx\tongji@cassosupervisor\@empty\else
++              \tongji@cover@line{\tongji@cassosupertitle}{\tongji@cassosupervisor} \\
++          \fi
++          \ifx\tongji@cjointinstitution\@empty\else
++              \tongji@cover@line{\tongji@cjointinstitutiontitle}{\tongji@cjointinstitution} \\
++          \fi
++          \end{tabular}
++    \fi
++    }
++  }
++  \vspace*{\fill}
++  \begin{center}
++    {\songti\sanhao\tongji@cdate}
+   \end{center}
++
+ } % end of titlepage
+ 
+ % 英文封面
+ \newcommand{\engcover}
+ {%
+   \begin{center}
+-      \vspace*{0.8cm}
+-      \parbox[t][1.8cm][t]{\textwidth}{
++      \parbox[t][2.6cm][t]{\textwidth}{
+         \centering\hspace*{.3cm}
+         \includegraphics[width=10cm]{tongji-whole-logo.pdf}
+       } % logo
+-      \\[-.6cm]
++      \\[-.5cm]
+       
+       \parbox[t][8cm][t]{\paperwidth-6cm}{
+         \begin{center}
+-          \iftongji@doctor \sihao[1.3]{\tongji@eapplydoctor}
+-          \else \iftongji@master \sihao[1.3]{\tongji@eapplymaster}
++          \iftongji@doctor \sihao[2.1]{\tongji@eapplydoctor}
++          \else \iftongji@master \sihao[2.1]{\tongji@eapplymaster}
+           \fi \fi \par\vskip 1.4cm
+ 
+-          \xiaoer[1.5]{\bfseries\sffamily\tongji@etitle}% 英文标题
++          \xiaoer[1.7]{\bfseries\sffamily\tongji@etitle}% 英文标题
+           \par% \vskip 14pt
+ 
+           \ifx\efunds\@empty\else\xiaosi[1.3]{\tongji@efunds}\fi
+         \end{center}
+       }
++  \end{center}
+ 
+-      \hspace*{-1.2cm}
+-      \parbox[t][11cm][t]{0.80\textwidth}{
+-        \sanhao[1.5] % 1.0 for smaller fonts
+-        \begin{center}
+-          \iftongji@profession % 专业学位
+-              \setlength{\tongji@title@width}{6em}
+-              \begin{tabular}{p{12cm}}
+-                \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
+-                \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
+-                \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
+-                \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
+-                \tongji@emajorfirsttitleprofession \tongji@title@esep \tongji@emajorfirst        \\
+-                \tongji@emajorsecondtitleprofession\tongji@title@esep \tongji@emajorsecond       \\ 
+-                \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
+-                \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
+-                \ifx\tongji@eassosupervisor\@empty\else
+-                  \tongji@eassosupertitleprofession\tongji@title@esep \tongji@eassosupervisor    \\
+-                \fi
+-                \ifx\tongji@ejointinstitution\@empty\else
+-                    \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
+-                \fi
+-          \else % 学术学位
+-            \ifx\tongji@cassosupervisor\@empty \setlength{\tongji@title@width}{4em}
+-            \else \setlength{\tongji@title@width}{5em} \fi
+-            \begin{tabular}{p{12cm}}
+-                \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
+-                \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
+-                \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
+-                \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
+-                \tongji@emajorfirsttitle           \tongji@title@esep \tongji@emajorfirst        \\
+-                \tongji@emajorsecondtitle          \tongji@title@esep \tongji@emajorsecond       \\
+-                \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
+-                \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
+-                \ifx\tongji@eassosupervisor\@empty\else
+-                    \tongji@eassosupertitle        \tongji@title@esep \tongji@eassosupervisor    \\
+-                \fi
+-                \ifx\tongji@ejointinstitution\@empty\else
+-                    \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
+-                \fi
++  \hspace*{4.5\ccwd}
++  \parbox[t][11cm][t]{0.80\textwidth}{
++    \sanhao[1.8] % 1.0 for smaller fonts
++    \iftongji@profession % 专业学位
++        \setlength{\tongji@title@width}{6em}
++        \begin{tabular}{p{12cm}}
++          \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
++          \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
++          \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
++          \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
++          \tongji@emajorfirsttitleprofession \tongji@title@esep \tongji@emajorfirst        \\
++          \tongji@emajorsecondtitleprofession\tongji@title@esep \tongji@emajorsecond       \\ 
++          \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
++          \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
++          \ifx\tongji@eassosupervisor\@empty\else
++            \tongji@eassosupertitleprofession\tongji@title@esep \tongji@eassosupervisor    \\
+           \fi
+-          \end{tabular}
+-        \end{center}
+-      }
+-      
+-      \begin{center}
+-        \sanhao\tongji@edate
+-      \end{center}
++          \ifx\tongji@ejointinstitution\@empty\else
++              \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
++          \fi
++    \else % 学术学位
++      \ifx\tongji@cassosupervisor\@empty \setlength{\tongji@title@width}{4em}
++      \else \setlength{\tongji@title@width}{5em} \fi
++      \begin{tabular}{p{12cm}}
++          \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
++          \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
++          \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
++          \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
++          \tongji@emajorfirsttitle           \tongji@title@esep \tongji@emajorfirst        \\
++          \tongji@emajorsecondtitle          \tongji@title@esep \tongji@emajorsecond       \\
++          \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
++          \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
++          \ifx\tongji@eassosupervisor\@empty\else
++              \tongji@eassosupertitle        \tongji@title@esep \tongji@eassosupervisor    \\
++          \fi
++          \ifx\tongji@ejointinstitution\@empty\else
++              \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
++          \fi
++    \fi
++    \end{tabular}
++  }
++  \vspace*{\fill}
++  \begin{center}
++    \sanhao\tongji@edate
+   \end{center}
++  
+ } % end of english cover
+ 
+ % \newcommand\tongji@underline[2][6em]{\hskip1pt\underline{\hb@xt@ #1{\hss#2\hss}}\hskip3pt}

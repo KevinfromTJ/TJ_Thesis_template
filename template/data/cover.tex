@@ -1,78 +1,42 @@
+% 在这里填写个人信息；英文授予学位名称必须按实际学位填写。
 \tongjisetup{
-  %******************************
-  % 注意：
-  %   1. 配置里面不要出现空行
-  %   2. 不需要的配置信息可以删除
-  %******************************
-  % 秘级
-  secretlevel={公开},
-  secretyear={0},
-  %
-  %
-  % 中文信息
-  ctitle={中文标题~English Title, \\ 中文副标题~English SubTitle}, % 可手动加入换行符 \\ 控制换行
-  cauthor={\blindreviewfield{姓名}},
-  studentnumber={\blindreviewfield{1234567}},
-  cdepartment={\blindreviewfield{电子与信息工程学院}},
-  csubjectcategory={工学}, % 学科门类
-  cmajorfirst={一级学科 \& 专业学位类别}, % 专业学位类别
-  cmajorsecond={二级学科 \& 专业领域}, % 专业领域
-  cresearchfield={研究方向}, % 研究方向
-  csupervisor={\blindreviewfield{导师姓名 教授}}, 
-  cassosupervisor={\blindreviewfield{副导师姓名 教授}}, % 副指导老师/行业导师, 没有把{}中内容留空即可, 或者注释掉
-  cjointinstitution={\blindreviewfield{联合培养单位名称}}, % 联合培养单位, 没有把{}中内容留空即可, 或者注释掉
-  cdate={\zhdigits{2025}年\zhnumber{3}月}, % 手动指定日期, 否则自动使用当前时间
-  cfunds={\blindreviewfield{（本论文由国家杰出青年基金 (No.123456789) 支持）}}, % 中文版基金信息
-  % 英文信息
-  etitle={Thesis Title in English}, 
-  eauthor={\blindreviewfield{Nome Cognome}},
-  edepartment={\blindreviewfield{College of Electronic and Information Engineering}},
-  esubjectcategory={Engineering}, % 学科门类
-  emajorfirst={First-level Discipline \& Degree}, % 专业学位类别
-  emajorsecond={Second-level Discipline \& Degree's Field}, % 专业领域
-  eresearchfield={Research Fieldd}, % 研究方向
-  esupervisor={\blindreviewfield{Prof. Supervisor}},
-  eassosupervisor={\blindreviewfield{Prof. Associate Supervisor}}, % 副指导老师/行业导师
-  ejointinstitution={\blindreviewfield{Joint Training Institution}}, % 联合培养单位
-  edate={March, 2025}, % 手动指定日期, 否则自动使用当前时间
-  efunds={\blindreviewfield{(Supported by the Natural Science Foundation of China for Distinguished Young Scholars, Grant No.123456789)}} % 英文版基金信息
+  ctitle={学位论文中文题目},
+  etitle={Thesis Title in English},
+  cauthor={\blindreviewfield{作者姓名}},
+  eauthor={\blindreviewfield{Author Name}},
+  studentnumber={\blindreviewfield{学号}},
+  cdepartment={\blindreviewfield{学院全称}},
+  edepartment={\blindreviewfield{School Name}},
+  csubjectcategory={工学},
+  esubjectcategory={Engineering},
+  cmajorfirst={学科或专业学位类别},
+  emajorfirst={Discipline or Degree Category},
+  cmajorsecond={二级学科或专业领域},
+  emajorsecond={Discipline or Professional Field},
+  cresearchfield={研究方向},
+  eresearchfield={Research Field},
+  csupervisor={\blindreviewfield{导师姓名及职称}},
+  esupervisor={\blindreviewfield{Supervisor Name and Title}},
+  cassosupervisor={},
+  eassosupervisor={},
+  cjointinstitution={},
+  ejointinstitution={},
+  cfunds={},
+  efunds={}
+  % cdate={二〇二六年十一月}, edate={November 2026},
+  % edegree={Master of Engineering}
 }
-
-% 后处理
 \makeatletter
-\define@key{tongji}{cheadingtitlenew}{\cheadingtitlenew{#1}}
-\gdef\cheadingtitlenew#1{\gdef\tongji@cheadingtitlenew{#1}}
 \tongjideletelinebreakcmd{tongji@ctitle}{tongji@posttitle}
-\cheadingtitlenew{\tongji@posttitle}
+\def\tongji@cheadingtitlenew{\tongji@posttitle}
 \makeatother
 
-% 定义中英文摘要和关键字
 \begin{cabstract}
-  \LaTeX~是常用的排版软件之一，能够输出高质量的学术出版物。
-  \tongjithesis{}~是基于~\LaTeX~的模板，历经多次改进。本次改进的主要贡献如下：
-  
-  \begin{enumerate}[1.]
-    \item 将平台迁移到 \emph{vscode}；
-    \item 适配最新的同济大学硕士学位论文要求；
-    \item 添加了包括 \emph{tikz}、\emph{algorithm2e} 等宏包的支持。
-  \end{enumerate}
-
-  感谢使用！
+本文档是论文排版示例，供填写真实研究内容前检查格式使用。本示例以同济大学研究生院二〇二五年十月发布的写作参考指南为依据，对页面设置、标题层次、摘要、图表、参考文献与附录编号进行了调整。撰写时请用研究目的、研究方法、研究成果和结论替换本段，突出自己的创新成果。摘要内不应出现图表，中文和英文内容应相互对应。
 \end{cabstract}
-
-\ckeywords{LaTeX, 毕业论文, 模板, 同济大学}
+\ckeywords{学位论文, 排版, 格式核对}
 
 \begin{eabstract}
-  \LaTeX~is the most popular typesetting system for academic writing.
-  \tongjithesis{}~is a~\LaTeX~template for Tongji University. The main contributions of this modification are as follows:
-
-  \begin{enumerate}[1.]
-    \item Migrate the platform to \emph{vscode};
-    \item Adapt to the latest requirements of the master's thesis of Tongji University;
-    \item Add support for packages such as \emph{tikz} and \emph{algorithm2e}.
-  \end{enumerate}
-
-  Thanks for using!
+This document is a typesetting example for checking a thesis layout before inserting research content. It follows the October 2025 writing guide issued by the Graduate School of Tongji University. The layout covers page dimensions, headings, abstracts, figures, tables, references, and appendix numbering. Replace this paragraph with the purpose, methods, results, and conclusions of the research. The English abstract should correspond to the Chinese abstract.
 \end{eabstract}
-
-\ekeywords{LaTeX, thesis, template, tongji-university}
+\ekeywords{thesis, typesetting, format verification}

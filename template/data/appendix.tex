@@ -1,28 +1,5 @@
-% 附录, 注意多个附录的编号是按照字母排序的
-
-\chapter{外文资料原文}
-\label{chap:appx:1}
-As one of the most widely used techniques in operations research, {\em mathematical programming} is defined as a means of maximizing a quantity known as {\em objective function}, subject to a set of constraints represented by equations and inequalities.
-Some known subtopics of mathematical programming are linear programming, nonlinear programming, multiobjective programming, goal programming, dynamic programming, and multilevel programming$^{[1]}$.
-
-
-\begin{equation} \equcaption{Optimization Problem 1} % 指定其出现在索引中
-    \left\{ \begin{array}{l}
-        \max \,\,f(x)      \\ [0.1 cm]
-        \mbox{subject to:} \\ [0.1 cm]
-        \qquad g_j(x)\le 0, \quad j=1,2,\cdots,p
-    \end{array} \right.
-\end{equation}
-
+\chapter{补充材料}
+附录使用字母编号，附录内的图、表、公式采用 A1、A2 等连续编号，不插入小数点。示例见式\eqref{eq:appendix}。
 \begin{equation}
-    \left\{ \begin{array}{l}
-        \max \,\,f\dual(x) \\ [0.1 cm]
-        \mbox{subject to:} \\ [0.1 cm]
-        \qquad g_j\dual(x)\ge 0, \quad j=1,2,\cdots,p
-    \end{array} \right.
+  a^2+b^2=c^2.\label{eq:appendix}
 \end{equation}
-
-\chapter{其它附录}
-\label{chap:appx:2}
-其它附录的内容可以放到这里。
-也可以独立存放，然后将 \verb|\tongjiinput|（或者 \verb|\wyqyinput|）到主文件中。

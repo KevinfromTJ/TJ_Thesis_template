@@ -1,0 +1,40 @@
+# Independent, pinned reference clones; provenance is in UPSTREAM.lock.json.
+/upstream/
+# Build intermediates and local rendering/conversion caches.
+**/output/
+__pycache__/
+*.pyc
+.DS_Store
+# Keep selected review evidence; exclude conversion profiles, tools and renders.
+/audit/*
+!/audit/COMPARISON.md
+!/audit/sources.json
+!/audit/word-layout.json
+!/audit/word-layout-report.md
+!/audit/official-guide.txt
+!/audit/official-example.txt
+!/audit/paragraph-evidence.json
+!/audit/paragraph-evidence-summary.txt
+!/audit/extract-word-layout.py
+!/audit/extract-paragraph-evidence.py
+!/audit/write-layout-report.py
+!/audit/branches-class.diff
+!/audit/template-vs-base.diff
+!/audit/adobe-review/
+/audit/adobe-review/*
+!/audit/adobe-review/REVIEW.md
+!/audit/adobe-review/sources.json
+!/audit/adobe-review/measurements.json
+!/audit/adobe-review/make_comparison.py
+!/audit/adobe-review/before/
+/audit/adobe-review/before/*
+!/audit/adobe-review/before/COMPARISON.md
+!/audit/adobe-review/before/README.md
+!/audit/adobe-review/before/tongjithesis.cls
+!/audit/adobe-review/before/data/
+/audit/adobe-review/before/data/*
+!/audit/adobe-review/before/data/statements.tex
+!/audit/adobe-review/before/thesis.pdf
+
+# Fontconfig-generated directory identifier.
+**/.uuid

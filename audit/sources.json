@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-11-11",
+  "official_page": "https://gs.tongji.edu.cn/info/1063/1754.htm",
+  "official_publication_date": "2025-10-31",
+  "basis": "User-provided original DOC files, matching files bundled by huang-shuai-dev byte-for-byte; live attachment download requires captcha.",
+  "repositories": [
+    {
+      "path": "upstream/TongjiThesisForCS",
+      "url": "https://github.com/windforestfiremountain/TongjiThesisForCS.git",
+      "commit": "bd4f2553826081f4dfcc44e61a04881efd6d549e"
+    },
+    {
+      "path": "upstream/TongjiThesis_Proto",
+      "url": "https://github.com/huang-shuai-dev/TongjiThesis_Proto.git",
+      "commit": "9362cdd8a4d8e5a73c0ce3f7df7bf6ace597c20e"
+    }
+  ],
+  "official_files": {
+    "GBT15835—2011出版物上数字用法.pdf": "836d5107ea4df7b6f654587d0c6d0d38325ebd88d18eaf1c9c30f2549bb9fc85",
+    "GBT7714—2015信息与文献参考文献著录规则.pdf": "f6aa0346a79a79fc1449ff7470e693a331f1233dadbfdead2b0ae7ffb5ae96c5",
+    "同济大学研究生学位论文写作参考示例.doc": "87031a8e16c3694ae4c8ea98453ef9470d7c11be24631aa4d4dd9d7320032f1e",
+    "同济大学研究生学位论文写作参考指南.doc": "54d02d03dde964b62d6ac29ea5b33376800fdd75916613d5a1b227a1cdd20e32"
+  },
+  "issues": [
+    "https://github.com/wyqy/TongjiThesis_Proto/issues/10",
+    "https://github.com/wyqy/TongjiThesis_Proto/issues/12",
+    "https://github.com/wyqy/TongjiThesis_Proto/issues/14",
+    "https://github.com/wyqy/TongjiThesis_Proto/issues/18"
+  ]
+}

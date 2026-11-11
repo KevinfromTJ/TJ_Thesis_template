@@ -1,0 +1,64 @@
+% Regression document: intentionally forces continuation pages.
+\documentclass[degree=master,degreetype=academic]{tongjithesis}
+\usepackage{booktabs}
+\addbibresource{tests/references.bib}
+\tongjimathversion{2}
+\newcommand{\auditparagraph}{%
+这是用于验证正文固定行距和页边距的排版测试文字。每个自然段首行缩进两个汉字，段前段后均不增加额外间距。This is a layout regression paragraph with Latin text. 本段只检验版面，不属于论文正文。\par}
+\makeatletter
+\newwrite\layoutout
+\immediate\openout\layoutout=\jobname.layout
+\newcommand{\layoutmeasure}[2]{\immediate\write\layoutout{#1=\the\dimexpr#2\relax}}
+\AtBeginDocument{%
+  \layoutmeasure{paperwidth}{\paperwidth}\layoutmeasure{paperheight}{\paperheight}%
+  \layoutmeasure{left}{1in+\hoffset+\oddsidemargin}%
+  \layoutmeasure{evenleft}{1in+\hoffset+\evensidemargin}%
+  \layoutmeasure{textwidth}{\textwidth}\layoutmeasure{textheight}{\textheight}%
+  \layoutmeasure{top}{1in+\voffset+\topmargin+\headheight+\headsep}%
+  \layoutmeasure{headtop}{1in+\voffset+\topmargin}%
+  \layoutmeasure{footerbaselinefrombottom}{\paperheight-(1in+\voffset+\topmargin+\headheight+\headsep+\textheight+\footskip)}%
+  \layoutmeasure{footerboxbottomfrombottom}{\paperheight-(1in+\voffset+\topmargin+\headheight+\headsep+\textheight+\footskip+2.1bp)}%
+  \layoutmeasure{bodyleading}{\baselineskip}%
+}
+\makeatother
+\begin{document}
+\frontmatter
+\makeatletter
+\begin{cabstract}
+\auditparagraph\newpage\auditparagraph
+\end{cabstract}
+\begin{eabstract}
+English abstract continuation test.\par\newpage
+English abstract second page.
+\end{eabstract}
+\ckeywords{测试, 行距, 页边距}
+\ekeywords{test, layout, margins}
+\tongji@makeabstract
+\makeatother
+\tableofcontents
+\mainmatter
+\chapter{正文布局测试}
+\section{行距检查}
+\auditparagraph\auditparagraph\auditparagraph
+\clearpage
+\auditparagraph\auditparagraph\auditparagraph
+\newcount\sectiontest
+\sectiontest=0
+\loop\advance\sectiontest by1
+  \section{目录续页检查\the\sectiontest}
+  \subsection{二级目录缩进检查}
+  测试段落。
+\ifnum\sectiontest<22\repeat
+\backmatter
+\begin{reference}
+\nocite{*}\printbibliography[heading=none]
+\end{reference}
+\begin{appendix}
+\chapter{编号检查}
+\begin{equation}1+1=2\end{equation}
+\begin{figure}[h]\centering\rule{10mm}{10mm}\caption{附录图编号}\end{figure}
+\begin{table}[h]\centering\caption{附录表编号}\begin{tabular}{cc}甲&乙\end{tabular}\end{table}
+\end{appendix}
+\begin{acknowledgement}\auditparagraph\newpage\auditparagraph\end{acknowledgement}
+\begin{resume}\auditparagraph\newpage\auditparagraph\end{resume}
+\end{document}

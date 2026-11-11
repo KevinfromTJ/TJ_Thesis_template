@@ -210,19 +210,22 @@
 % 参考文献引用: biblatex
 \iftongji@numeric
   \RequirePackage[backend=biber,style=gb7714-2015,%
-  gbnamefmt=familyahead,gbpub=false,isbn=false,doi=false,gbtitlelink=true,url=false,sortlocale=zh__pinyin]{biblatex} 
+  gbnamefmt=uppercase,gbpub=true,isbn=false,doi=true,gbtitlelink=false,url=true,sortlocale=zh__pinyin]{biblatex} 
 \else
   \iftongji@authoryear % 若需使用author-year格式的文献引用, 可将style选择为: gb7714-2015ay
     \RequirePackage[backend=biber,style=gb7714-2015ay,%
-    gbnamefmt=familyahead,gbpub=false,isbn=false,doi=false,gbtitlelink=true,url=false,sortlocale=zh__pinyin,]{biblatex} 
+    gbnamefmt=uppercase,gbpub=true,isbn=false,doi=true,gbtitlelink=false,url=true,sortlocale=zh__pinyin,]{biblatex} 
   \fi
 \fi
 % 参考文献宏包的其他选项:
 % gbpub=false: 用于去除参考文献中的出版地不详, 出版者不详等信息
 % maxnames={int}: 设置所有作者都能够列出时, 允许的最大作者数量, 默认为3
 % 后边 isbn 和 doi 选项略去
-\DefineBibliographyStrings{english}{in={}}  % 去掉中文析出文献的 in 符号
-\DefineBibliographyStrings{english}{incn={}} % 去掉中文析出文献的 // 符号
+% Keep the GB/T 7714-2015 separator for extracted works.
+% \DefineBibliographyStrings{english}{in={}}  % 去掉中文析出文献的 in 符号
+% \DefineBibliographyStrings{english}{incn={}} % 去掉中文析出文献的 // 符号
+
+\renewbibmacro*{in:}{\printtext{\allowbreak//\allowbreak}}
 
 % 生成有书签的 pdf 及其开关
 \RequirePackage{hyperref}
@@ -249,17 +252,15 @@
 
 % 页面设置
 \RequirePackage{geometry}
-\geometry{
-	a4paper, % 210 * 297mm
-	hcentering, % 将hmarginratio设为1:1, 即left=right
-	ignoreall, % body部分不包含top,bottom,left,right, 即textheight就是正文的高度
-	textheight=246.2mm, % 297-25.4x2
-	bottom=25.4mm,
-	nomarginpar, % 即\marginparwidth=0pt and \marginparsep=0pt
-	left=31.7mm, % 注意left=right
-	headheight=5.5mm,
-	headsep=5.4mm,	% 页眉距顶端要求 2cm. 即25.4-20=5.4
-	footskip=5.5mm}	%\footskip指的是正文最后一行距离页脚的距离(baseline)
+% Guide 2025-10, section 4.1. Distances are measured from paper edges.
+% Header top = top - headheight - headsep = 20 mm (not headsep=5.4mm!).
+% Word footer=15mm locates the footer box BOTTOM, not its baseline.
+% Footer box depth is explicitly 2.1bp (20% of the 10.5bp em).
+% baseline from bottom = 15mm+2.1bp; footskip = 25.4mm-15mm-2.1bp.
+\geometry{a4paper,ignoreall,nomarginpar,
+  top=25.4mm,bottom=25.4mm,left=31.7mm,right=31.7mm,
+  bindingoffset=0mm,headheight=5mm,headsep=0.4mm,footskip=\dimexpr10.4mm-2.1bp\relax}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 文章字体设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -314,7 +315,8 @@
 \tongji@define@fontsize{bahao}{5bp}
 
 % 全文首行缩进2字符, 标点符号用全角
-\ctexset{ punct=quanjiao, space=auto, autoindent=true }
+\ctexset{ punct=quanjiao, space=auto, autoindent=2 }
+\setlength{\parskip}{0pt}
 % \ctexset的详细介绍见"ctex宏集手册" (2018/01/28 v2.4.12)
 % 它有很多实用选项, 如chapter/name = {第,章}, section/name = {\S}
 
@@ -346,20 +348,23 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}}
 
+\newcommand{\tongji@pagenumber}{%
+  \raisebox{0pt}[8.4bp][2.1bp]{\psfamily\fontsize{10.5bp}{12.6bp}\selectfont\thepage}}
+
 % 只显示页脚(页码), 默认 \cs{chapter} 调用 \cs{tongji@footonly}
 \fancypagestyle{tongji@footonly}{%
   \fancyhead{}
-  \fancyfoot[C]{\songti\wuhao\thepage}
+  \fancyfoot[C]{\tongji@pagenumber}
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}}
 
 % 页眉页脚同时显示 (可选择是否页眉居中)
 \fancypagestyle{tongji@headingmain}{%
   \fancyhead{}
-  \fancyhead[\xparameter@heading@odd]{\psfamily\wuhao\xparameter@heading@mainleft}
-  \fancyhead[\xparameter@heading@even]{\psfamily\wuhao\xparameter@heading@mainright}
+  \fancyhead[\xparameter@heading@odd]{\normalfont\songti\wuhao\xparameter@heading@mainleft}
+  \fancyhead[\xparameter@heading@even]{\normalfont\songti\wuhao\xparameter@heading@mainright}
   \fancyfoot{}
-  \fancyfoot[C]{\songti\wuhao\thepage}
+  \fancyfoot[C]{\tongji@pagenumber}
   \renewcommand{\headrulewidth}{0.4pt}
   \renewcommand{\footrulewidth}{0pt}}
 
@@ -369,7 +374,7 @@
   \fancyhead[\xparameter@heading@odd]{\psfamily\wuhao\xparameter@heading@cother{\appendixname}}
   \fancyhead[\xparameter@heading@even]{\psfamily\wuhao\xparameter@heading@cother{\appendixname}}
   \fancyfoot{}
-  \fancyfoot[C]{\songti\wuhao\thepage}
+  \fancyfoot[C]{\tongji@pagenumber}
   \renewcommand{\headrulewidth}{0.4pt}
   \renewcommand{\footrulewidth}{0pt}}
 
@@ -378,11 +383,12 @@
   \clearpage
   \@mainmatterfalse
   \pagenumbering{Roman}
+  \hypersetup{pageanchor=false}
   \pagestyle{tongji@empty}
   }
 % 注意 \mainmatter的 heading 设置除此之外, 还有 \ctexset 的 pagestyle 域
 \renewcommand\mainmatter{%
-  \cleardoublepage % 强迫第一章的首页从右边开始, 在双面打印中, 即奇数页在右边
+  \clearpage % 指南要求每部分新页，不要求正文另起奇数页
   \@mainmattertrue
   \pagenumbering{arabic}
   \pagestyle{tongji@headingmain}}
@@ -471,10 +477,10 @@
 % 注: \DeclareCaptionLabelFormat 来自subcaption包
 \DeclareCaptionLabelFormat{tongji}{{\wuhao[1.5]\normalfont #1~#2}}
 \DeclareCaptionLabelSeparator{tongji}{\hspace{1em}}
-\DeclareCaptionFont{tongji}{\wuhao[1.5]}
-\captionsetup{labelformat=tongji,labelsep=tongji,font=tongji}
-\captionsetup[table]{position=top,belowskip={12bp-\intextsep},aboveskip=6bp}
-\captionsetup[figure]{position=bottom,belowskip=0bp,aboveskip=6bp}
+\DeclareCaptionFont{tongji}{\normalfont\songti\wuhao[1]}
+\captionsetup{labelformat=tongji,labelsep=tongji,font=tongji,justification=centering,singlelinecheck=false}
+\captionsetup[table]{position=top,belowskip=6bp,aboveskip=6bp}
+\captionsetup[figure]{position=bottom,belowskip=12bp,aboveskip=6bp}
 \captionsetup[sub]{font=tongji,skip=6bp}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
 \renewcommand{\thesubtable}{(\alph{subtable})}
@@ -516,10 +522,10 @@
   chapter={ % 章标题
     afterindent=true,               % 设置章节标题后首段的缩进
     pagestyle={tongji@headingmain}, % 保证章首页的页眉正确
-    beforeskip={2bp},               % 设置章节标题前的垂直间距
+    beforeskip={17.52bp},            % Word段前24bp映射到CTeX行盒；Adobe标题基线117.48bp
     aftername=\hskip\ccwd,          % 控制章节编号与标题内容之间的距离, 其中 \ccwd 为一个汉字的宽度
-    afterskip={18bp},               % 控制章节标题与后面下方之间的距离
-    format={\centering\bfseries\phfamily\sanhao[1.8]},
+    afterskip={23.805bp},             % 补偿标题行盒，保留后续正文起点
+    format={\centering\bfseries\phfamily\sanhao[1]},
                                     % 控制章节标题的全局格式, 作用域为章节名字和随后的标题内容
                                     % 可以用于控制章节标题的对齐方式, 整体字体字号等格
     nameformat=\relax,
@@ -529,29 +535,36 @@
     lotskip=0pt,                    % 控制表格目录(.lot)中, 章之间的表格标题的距离
     % loaskip=0pt,
   },
-  section={ % 一级节标题
+  section={ % 一级节标题：Word单倍行距含字体行盒，并非15bp
     afterindent=true,
-    beforeskip={24bp \@plus 1ex \@minus .2ex},
-    afterskip={13bp \@plus .2ex},
-    format={\phfamily\xiaosan[1.8]},
-	numberformat={\phfamily\sanhao[1]},
+    beforeskip={24bp},
+    afterskip={12.16bp},
+    format={\phfamily\fontsize{15bp}{25bp}\selectfont},
+    aftername=\hskip\ccwd,
+	numberformat=\relax,
   },
   subsection={
     afterindent=true,
-    beforeskip={12bp \@plus 1ex \@minus .2ex},
-    afterskip={13bp \@plus .2ex},
-    format={\phfamily\sihao[1.8]},
-    numberformat={\phfamily\xiaosan[1]},
+    beforeskip={12bp},
+    afterskip={6bp},
+    format={\phfamily\sihao[1]},
+    aftername=\hskip\ccwd,
+    numberformat=\relax,
   },
   subsubsection={
     afterindent=true,
-    beforeskip={12bp \@plus 1ex \@minus .2ex},
-    afterskip={13bp \@plus .2ex},
-    format={\phfamily\xiaosi[1.8]},
-	numberformat={\phfamily\banxiaosi[1]},
+    beforeskip={12bp},
+    afterskip={6bp},
+    format={\phfamily\xiaosi[1]},
+    aftername=\hskip\ccwd,
+	numberformat=\relax,
   },
   paragraph/afterindent=true,
   subparagraph/afterindent=true}
+
+% CTeX suppresses section beforeskip after a chapter. Word retains the
+% difference between section-before (24bp) and chapter-after (18bp).
+\pretocmd{\section}{\if@nobreak\vskip6bp\relax\fi}{}{\ClassError{tongjithesis}{Cannot patch section spacing}{Check the CTeX version.}}
 
 % 目录调教:
 % \NewDocumentCommand 替代了 \newcommand, 它是 xparse 宏包的主要命令, 可以定义参数个数, 类型等
@@ -589,29 +602,9 @@
     \addcontentsline{toc}{chapter}{#3}
   }
   \chapter*{#3}%
-  \IfValueTF{#4}{% 提供了第四个参数, 即 header
-    \ifthenelse{\equal{#4}{}}{\@mkboth{}{}} % 页眉为空
-    {% 页眉为 header
-      \thispagestyle{fancy}
-      \fancyhead{} \fancyhead[\xparameter@heading@odd]{#4} \fancyhead[\xparameter@heading@even]{#4}
-      \fancyfoot{} \fancyfoot[C]{\songti\wuhao\thepage}
-      \renewcommand{\headrulewidth}{0.4pt}
-      \renewcommand{\footrulewidth}{0pt}
-    }
-    % 注: 此命令等同于 \markboth{left}{right}
-    % 也就是定义一个 "left-hand heading" 和 "righthand heading"
-    % 这样, \leftmark 读出来的就是我们设的left, \rightmark 就是我们设的right
-    % 通过这种方式, 我们可以很方便地设置页眉
-  }
-  {% 若未提供 header, 则取 title 为页眉
-    \thispagestyle{fancy}
-    \fancyhead{}
-    \fancyhead[RO,LE]{#3}
-    \fancyfoot{}
-    \fancyfoot[C]{\songti\wuhao\thepage}
-    \renewcommand{\headrulewidth}{0.4pt}
-    \renewcommand{\footrulewidth}{0pt}
-  }
+  \IfValueTF{#4}{\markboth{#4}{#4}}{\markboth{#3}{#3}}
+  \pagestyle{tongji@headingmain}
+  \thispagestyle{tongji@headingmain}
 }
 
 % 目录最多四层, 即: x.x.x.x, 对应的命令和层序号分别是: 
@@ -625,23 +618,23 @@
 % 减小目录项中的导引小点跟页码之间的留白
 % 目录生成命令
 \renewcommand\tableofcontents{%
-  \tongji@chapter*[]{\contentsname}[\psfamily\xparameter@heading@cother{\contentsname}]
-  \xiaosi[1.5]\@starttoc{toc}\normalsize\clearpage}
+  \tongji@chapter*[]{\contentsname}[\songti\xparameter@heading@cother{\contentsname}]
+  \songti\fontsize{12bp}{18bp}\selectfont\@starttoc{toc}\normalsize\clearpage}
 
 
 % 调整目录特殊要求, 重定义缩进量
 % 研究生学位论文写作指南中规定: 目录中的章标题行居左书写, 一级节标题行缩进 1 个汉字符(2个字符), 二级节标题行缩进 2 个汉字符(4个字符)
 \RequirePackage{titletoc}
-\contentsmargin{0em}
+\contentsmargin{2.5em}
 \titlecontents{chapter}[0em]{\filright}%
-    {\songti\xiaosi\thecontentslabel\enspace}%
-        {\songti\xiaosi}{\dotfill\contentspage}[\addvspace{0pt}]
-\titlecontents{section}[1em]{\addvspace{0pt}}%
-    {\songti\xiaosi \thecontentslabel\enspace}%
-        {\songti\xiaosi}{\dotfill\contentspage}[\addvspace{0pt}]
-\titlecontents{subsection}[2em]{\addvspace{0pt}}%
-    {\songti\xiaosi\thecontentslabel\enspace}%
-        {\songti\xiaosi}{\dotfill\contentspage}[\addvspace{0pt}]
+    {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
+\titlecontents{section}[2em]{\addvspace{0pt}}%
+    {\songti\fontsize{12bp}{18bp}\selectfont \thecontentslabel\enspace}%
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
+\titlecontents{subsection}[4em]{\addvspace{0pt}}%
+    {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 论文摘要设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -677,18 +670,22 @@
   \cleardoublepage % always openright for Abstract
   \tongji@chapter*[]{\tongji@cabstractname}[\rmfamily\xparameter@heading@cother{\tongji@cabstractname}] % no tocline
   \pagenumbering{Roman}
+  \hypersetup{pageanchor=true}
   \tongji@cabstract
   \vskip12bp
-  \setbox0=\hbox{{\bfseries\heiti\tongji@ckeyword@title}}
+  \setbox0=\hbox{{\bfseries\songti\tongji@ckeyword@title}}
   \noindent\hangindent\wd0\hangafter1
     \box0\tongji@ckeywords
   % \cleardoublepage % always openright for Abstract  
-  \tongji@chapter*[]{\tongji@eabstractname}[\rmfamily\xparameter@heading@eother{\tongji@eabstractname}] % no tocline
+  \begingroup
+  \ctexset{chapter/format={\centering\bfseries\sffamily\sanhao[1]}}
+  \tongji@chapter*[]{\tongji@eabstractname}[\rmfamily\xparameter@heading@eother{Abstract}] % no tocline
   \tongji@eabstract
   \vskip12bp
   \setbox0=\hbox{{\bfseries\tongji@ekeyword@title}}
   \noindent\hangindent\wd0\hangafter1
-    \box0\tongji@ekeywords}
+    \box0\tongji@ekeywords\par\clearpage
+  \endgroup}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 符号列表设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -697,8 +694,8 @@
 % 主要符号对照表  
 % 基于清华模板, 利用 \pkg{enumitem} 改造环境定义
 \NewDocumentEnvironment{denotation}{O{3.5cm}}{%
-  \tongji@chapter*{\tongji@denotationname}[\psfamily\xparameter@heading@cother{\tongji@denotationname}]
-  \vskip-30bp\xiaosi[1.6]\begin{tongji@denotation}[labelwidth=#1]
+  \tongji@chapter*{\tongji@denotationname}[\songti\xparameter@heading@cother{\tongji@denotationname}]
+  \songti\fontsize{10.5bp}{16bp}\selectfont\begin{tongji@denotation}[labelwidth=#1]
 }{%
   \end{tongji@denotation}
   \clearpage
@@ -729,11 +726,11 @@
   \setcounter{tocdepth}{2} % restore tocdepth in case being modified
   \@ifstar
     {%带星的不加入目录, 如\listoftables*
-      \tongji@chapter*[]{\csname list#1name\endcsname}[\psfamily\xparameter@heading@cother\expandafter{\csname list#1name\endcsname}]
+      \tongji@chapter*[]{\csname list#1name\endcsname}[\songti\xparameter@heading@cother\expandafter{\csname list#1name\endcsname}]
       \tongji@starttoc{#1}
       \clearpage}
     {%加入目录
-      \tongji@chapter*{\csname list#1name\endcsname}[\psfamily\xparameter@heading@cother\expandafter{\csname list#1name\endcsname}]
+      \tongji@chapter*{\csname list#1name\endcsname}[\songti\xparameter@heading@cother\expandafter{\csname list#1name\endcsname}]
       \tongji@starttoc{#1}
       \clearpage}
   \titlecontents{#1}[0em]{\filright}%设定索引样式
@@ -776,7 +773,7 @@
 
 % 设置文档环境
 \NewDocumentEnvironment{acknowledgement}{}{%
-  \tongji@chapter*{\tongji@acknowname}[\psfamily\xparameter@heading@cother{\tongji@acknowname}] 
+  \tongji@chapter*{\tongji@acknowname}[\songti\xparameter@heading@cother{\tongji@acknowname}] 
   \fangsong}
   {\clearpage}
 
@@ -788,14 +785,27 @@
 \let\inlinecite\parencite
 
 % 文献列表字体
-\renewcommand{\bibfont}{\zihao{5}\songti }%宋体五号
-% \setlength{\bibitemsep}{0ex}
+\renewcommand{\bibfont}{\songti\fontsize{10.5bp}{16bp}\selectfont}%宋体五号
+\setlength{\bibitemsep}{0pt}
+\setlength{\bibparsep}{0pt}
+\setlength{\bibhang}{21bp}
 \setlength{\bibnamesep}{0ex}
 \setlength{\bibinitsep}{0ex}
 
+\iftongji@numeric
+% Word-style hanging paragraph: first line at the left margin, continuation
+% lines at two Chinese characters. Wide labels retain their natural size.
+\defbibenvironment{bibliography}
+  {\list{}{\setlength{\leftmargin}{21bp}\setlength{\itemindent}{-21bp}%
+     \setlength{\labelwidth}{0pt}\setlength{\labelsep}{0pt}%
+     \setlength{\itemsep}{0pt}\setlength{\parsep}{0pt}}}
+  {\endlist}
+  {\item\printtext[labelnumberwidth]{\printfield{labelprefix}\printfield{labelnumber}}\addspace}
+\fi
+
 % 设置文档环境
 \NewDocumentEnvironment{reference}{}{%
-  \tongji@chapter*{\tongji@referencename}[\psfamily\xparameter@heading@cother{\tongji@referencename}]}
+  \tongji@chapter*{\tongji@referencename}[\songti\xparameter@heading@cother{\tongji@referencename}]}
   {\clearpage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -807,30 +817,33 @@
 \renewenvironment{appendix}{% 
   \ctexset{% 附录仍属于 mainmattertrue 才能正确编号成附录A 的形式,
     % 此处的 pagestyle 仍然会沿用我们前面设的 chapter 的 pagestyle, 而我们需要更改附录的页眉, 因此需要重新设置一下页眉
-    chapter/pagestyle={tongji@headingappendix} % 保证首页的页眉正确
+    chapter/pagestyle={tongji@headingmain} % 保证首页的页眉正确
     } 
-  \pagestyle{tongji@headingappendix} % 保证附录非首页的页眉正确
-  \let\title\tongji@appendix@title
-  \tongji@appendix}{%
-  \let\title\@gobble \clearpage}
+  \pagestyle{tongji@headingmain} % 保证附录非首页的页眉正确
+  \tongji@appendix
+  \renewcommand\thefigure{\Alph{chapter}\arabic{figure}}%
+  \renewcommand\thetable{\Alph{chapter}\arabic{table}}%
+  \renewcommand\theequation{\Alph{chapter}\arabic{equation}}%
+}{%
+  \clearpage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 个人简历设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NewDocumentEnvironment{resume}{}{%
-  \tongji@chapter*{\tongji@resumename}[\psfamily\xparameter@heading@cother{\tongji@resumename}] 
-  \wuhao[1.5] \setlist[enumerate,1]{leftmargin=2em}} % 设置enumerate左间隙距离
+  \tongji@chapter*{\tongji@resumename}[\songti\xparameter@heading@cother{\tongji@resumename}] 
+  \songti\fontsize{10.5bp}{16bp}\selectfont \setlist[enumerate,1]{leftmargin=2em}} % 设置enumerate左间隙距离
   {\clearpage}
 
-\newcommand{\resumeitem}[1]{\vspace{2.5em}{\bfseries\heiti\wuhao\leftline{#1}}\par}
+\newcommand{\resumeitem}[1]{\par{\bfseries\songti\fontsize{10.5bp}{16bp}\selectfont\noindent #1}\par}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 原创声明设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NewDocumentEnvironment{statements}{}{
-  \pagestyle{tongji@empty}}
+  \pagestyle{tongji@footonly}}
   {\clearpage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -856,169 +869,104 @@
   \tongji@cover@label{#1}\tongji@title@sep\tongji@cover@value{#2}%
 }
 
-\newcommand{\chicover} % 中文封面
-{
-  \begin{center}
-    % \parbox[t][1.8cm][t]{\textwidth}{
-    %   \hspace*{11.2cm}
-    %   \iftongji@secret{\sanhao\tongji@secret@title}
-    %   \else\rule{1cm}{0cm} \fi % 是否显示密级
-    %   \\[0.1cm]
-    %   \iftongji@electronic{{\bfseries\itshape\kaishu\xiaosi\tongji@thesistype (打印时删除)}}
-    %   \else\rule{1cm}{0cm} \fi % 是否显示打印时删除
-    % }
-    % \\[-.9cm]
-    \parbox[t][2.6cm][t]{\textwidth}{
-      \centering
-      \hspace*{0.35cm}
-      \includegraphics[width=10cm]{tongji-whole-logo.pdf}
-    } % logo
-    \\[-.5cm] 
-    
-    \parbox[t][5cm][t]{\paperwidth-7cm}{
-      \begin{center}
-        \erhao[1]{{\bfseries\lishu\tongji@capply}} \par\vskip 0.25cm
-        \iftongji@academic{\sanhao[1]{{\bfseries\lishu(学术学位)}}}
-        \else \iftongji@profession{\sanhao[1]{{\bfseries\lishu(专业学位)}}}
-        \else \iftongji@equaleducation {\sanhao[1]{{\bfseries\lishu(同等学力)}}}
-        \fi \fi \fi \par\vskip 0.5cm
-
-        \parbox[t]{\paperwidth-7cm}{\begin{center}\zihao{-4}\linespread{1.0}\selectfont
-          \erhao[1.4]{\bfseries\sffamily\tongji@ctitle}% 中文标题
-        \end{center}}
-        \par\vskip -0.3cm
-
-        \parbox[t]{\paperwidth-7cm}{\begin{center}\zihao{-4}\linespread{1.3}\selectfont
-          \ifx\cfunds\@empty\else\tongji@cfunds\fi
-        \end{center}}
-      \end{center}
-    }
-  \end{center}
-
-  \par\vskip 2.6cm
-
-  \hspace*{4.5\ccwd}
-  \parbox[t][11cm][t]{\textwidth}{
-    {
-      \fangsong\sanhao[1.5]
-      \setlength{\extrarowheight}{7.3pt}
-      \iftongji@profession% 专业学位
-          \begin{tabular}{l}
-          \tongji@cover@line{\tongji@cauthortitle}{\tongji@cauthor} \\
-          \tongji@cover@line{\tongji@cstudentnumbertitle}{\tongji@studentnumber} \\
-          \tongji@cover@line{\tongji@cdepartmenttitle}{\tongji@cdepartment} \\
-          \tongji@cover@line{\tongji@csubjectcategorytitle}{\tongji@csubjectcategory} \\
-          \tongji@cover@line{\tongji@cmajorfirsttitleprofession}{\tongji@cmajorfirst} \\
-          \tongji@cover@line{\tongji@cmajorsecondtitleprofession}{\tongji@cmajorsecond} \\
-          \tongji@cover@line{\tongji@cresearchfieldtitle}{\tongji@cresearchfield} \\
-          \tongji@cover@line{\tongji@csupervisortitle}{\tongji@csupervisor} \\
-          \ifx\tongji@cassosupervisor\@empty\else
-            \tongji@cover@line{\tongji@cassosupertitleprofession}{\tongji@cassosupervisor} \\
-          \fi
-          \ifx\tongji@cjointinstitution\@empty\else
-              \tongji@cover@line{\tongji@cjointinstitutiontitle}{\tongji@cjointinstitution} \\
-          \fi
-          \end{tabular}
-      \else% 学术学位
-          \begin{tabular}{l}
-          \tongji@cover@line{\tongji@cauthortitle}{\tongji@cauthor} \\
-          \tongji@cover@line{\tongji@cstudentnumbertitle}{\tongji@studentnumber} \\
-          \tongji@cover@line{\tongji@cdepartmenttitle}{\tongji@cdepartment} \\
-          \tongji@cover@line{\tongji@csubjectcategorytitle}{\tongji@csubjectcategory} \\
-          \tongji@cover@line{\tongji@cmajorfirsttitle}{\tongji@cmajorfirst} \\
-          \tongji@cover@line{\tongji@cmajorsecondtitle}{\tongji@cmajorsecond} \\
-          \tongji@cover@line{\tongji@cresearchfieldtitle}{\tongji@cresearchfield} \\
-          \tongji@cover@line{\tongji@csupervisortitle}{\tongji@csupervisor} \\
-          \ifx\tongji@cassosupervisor\@empty\else
-              \tongji@cover@line{\tongji@cassosupertitle}{\tongji@cassosupervisor} \\
-          \fi
-          \ifx\tongji@cjointinstitution\@empty\else
-              \tongji@cover@line{\tongji@cjointinstitutiontitle}{\tongji@cjointinstitution} \\
-          \fi
-          \end{tabular}
+% Covers: Word/Adobe reference pages 1, 2 and 5, not a converted LO layout.
+% The original Word section stores a 15.6bp line grid; information rows
+% occupy TWO grid lines (31.2bp), despite the paragraph label "single".
+\newsavebox{\tongji@coverinfo}
+\newsavebox{\tongji@covertitle}
+\newcommand{\tongji@cover@put}[3]{\put(#1,-#2){#3}}
+\newcommand{\tongji@cover@center}[2]{%
+  \tongji@cover@put{0}{#1}{\makebox[\paperwidth][c]{#2}}}
+\newcommand{\tongji@cover@check}{%
+  \ifdim\dp\tongji@coverinfo>315bp
+    \ClassWarning{tongjithesis}{Cover information reaches the date area. Shorten or reflow the fields; do not reduce font size}%
+  \fi}
+\newcommand{\chicover}{%
+  \begingroup
+  \sbox{\tongji@coverinfo}{\vtop{%
+    \hsize=\dimexpr\textwidth-85.7bp\relax\parindent=0pt\parskip=0pt
+    \fangsong\fontspec{FangSong.ttf}[Path={fonts/}]\fontsize{16bp}{31.2bp}\selectfont
+    \tongji@cover@line{\tongji@cauthortitle}{\tongji@cauthor}\par
+    \tongji@cover@line{\tongji@cstudentnumbertitle}{\tongji@studentnumber}\par
+    \tongji@cover@line{\tongji@cdepartmenttitle}{\tongji@cdepartment}\par
+    \tongji@cover@line{\tongji@csubjectcategorytitle}{\tongji@csubjectcategory}\par
+    \iftongji@profession
+      \tongji@cover@line{\tongji@cmajorfirsttitleprofession}{\tongji@cmajorfirst}\par
+      \tongji@cover@line{\tongji@cmajorsecondtitleprofession}{\tongji@cmajorsecond}\par
+    \else
+      \tongji@cover@line{\tongji@cmajorfirsttitle}{\tongji@cmajorfirst}\par
+      \tongji@cover@line{\tongji@cmajorsecondtitle}{\tongji@cmajorsecond}\par
     \fi
-    }
-  }
-  \vspace*{\fill}
-  \begin{center}
-    {\songti\sanhao\tongji@cdate}
-  \end{center}
-
-} % end of titlepage
-
-% 英文封面
-\newcommand{\engcover}
-{%
-  \begin{center}
-      \parbox[t][2.6cm][t]{\textwidth}{
-        \centering\hspace*{.3cm}
-        \includegraphics[width=10cm]{tongji-whole-logo.pdf}
-      } % logo
-      \\[-.5cm]
-      
-      \parbox[t][8cm][t]{\paperwidth-6cm}{
-        \begin{center}
-          \iftongji@doctor \sihao[2.1]{\tongji@eapplydoctor}
-          \else \iftongji@master \sihao[2.1]{\tongji@eapplymaster}
-          \fi \fi \par\vskip 1.4cm
-
-          \xiaoer[1.7]{\bfseries\sffamily\tongji@etitle}% 英文标题
-          \par% \vskip 14pt
-
-          \ifx\efunds\@empty\else\xiaosi[1.3]{\tongji@efunds}\fi
-        \end{center}
-      }
-  \end{center}
-
-  \hspace*{4.5\ccwd}
-  \parbox[t][11cm][t]{0.80\textwidth}{
-    \sanhao[1.8] % 1.0 for smaller fonts
-    \iftongji@profession % 专业学位
-        \setlength{\tongji@title@width}{6em}
-        \begin{tabular}{p{12cm}}
-          \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
-          \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
-          \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
-          \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
-          \tongji@emajorfirsttitleprofession \tongji@title@esep \tongji@emajorfirst        \\
-          \tongji@emajorsecondtitleprofession\tongji@title@esep \tongji@emajorsecond       \\ 
-          \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
-          \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
-          \ifx\tongji@eassosupervisor\@empty\else
-            \tongji@eassosupertitleprofession\tongji@title@esep \tongji@eassosupervisor    \\
-          \fi
-          \ifx\tongji@ejointinstitution\@empty\else
-              \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
-          \fi
-    \else % 学术学位
-      \ifx\tongji@cassosupervisor\@empty \setlength{\tongji@title@width}{4em}
-      \else \setlength{\tongji@title@width}{5em} \fi
-      \begin{tabular}{p{12cm}}
-          \tongji@eauthortitle               \tongji@title@esep \tongji@eauthor            \\
-          \tongji@estudentnumbertitle        \tongji@title@esep \tongji@studentnumber      \\
-          \tongji@edepartmenttitle           \tongji@title@esep \tongji@edepartment        \\
-          \tongji@esubjectcategorytitle      \tongji@title@esep \tongji@esubjectcategory   \\
-          \tongji@emajorfirsttitle           \tongji@title@esep \tongji@emajorfirst        \\
-          \tongji@emajorsecondtitle          \tongji@title@esep \tongji@emajorsecond       \\
-          \tongji@eresearchfieldtitle        \tongji@title@esep \tongji@eresearchfield     \\
-          \tongji@esupervisortitle           \tongji@title@esep \tongji@esupervisor        \\
-          \ifx\tongji@eassosupervisor\@empty\else
-              \tongji@eassosupertitle        \tongji@title@esep \tongji@eassosupervisor    \\
-          \fi
-          \ifx\tongji@ejointinstitution\@empty\else
-              \tongji@ejointinstitutiontitle \tongji@title@esep \tongji@ejointinstitution  \\
-          \fi
+    \tongji@cover@line{\tongji@cresearchfieldtitle}{\tongji@cresearchfield}\par
+    \tongji@cover@line{\tongji@csupervisortitle}{\tongji@csupervisor}\par
+    \ifx\tongji@cassosupervisor\@empty\else
+      \iftongji@profession
+        \tongji@cover@line{\tongji@cassosupertitleprofession}{\tongji@cassosupervisor}\par
+      \else\tongji@cover@line{\tongji@cassosupertitle}{\tongji@cassosupervisor}\par\fi\fi
+    \ifx\tongji@cjointinstitution\@empty\else
+      \tongji@cover@line{\tongji@cjointinstitutiontitle}{\tongji@cjointinstitution}\par\fi
+  }}%
+  \sbox{\tongji@covertitle}{\vtop{\hsize=\textwidth\parindent=0pt\centering
+    \heiti\sffamily\bfseries\fontsize{22bp}{31.2bp}\selectfont\tongji@ctitle\par
+    \ifx\tongji@cfunds\@empty\else
+      \vskip12bp\normalfont\songti\fontsize{16bp}{24bp}\selectfont\tongji@cfunds\par\fi}}%
+  \tongji@cover@check
+  \AddToShipoutPictureFG*{\AtPageUpperLeft{\setlength{\unitlength}{1bp}%
+    \iftongji@profession
+      \tongji@cover@center{148}{\includegraphics[width=100mm,height=26mm]{tongji-official-logo.jpeg}}%
+      \tongji@cover@center{181.32}{\lishu\bfseries\erhao\tongji@capply}%
+      \tongji@cover@center{210.36}{\lishu\bfseries\sanhao（专业学位）}%
+      \tongji@cover@put{89.858}{278.52}{\usebox{\tongji@covertitle}}%
+      \tongji@cover@put{175.558}{407.64}{\usebox{\tongji@coverinfo}}%
+    \else
+      \tongji@cover@center{179.2}{\includegraphics[width=100mm,height=26mm]{tongji-official-logo.jpeg}}%
+      \tongji@cover@center{212.52}{\lishu\bfseries\erhao\tongji@capply}%
+      \tongji@cover@center{241.56}{\lishu\bfseries\sanhao\iftongji@equaleducation（同等学力学术型）\else（学术学位）\fi}%
+      \tongji@cover@put{89.858}{309.72}{\usebox{\tongji@covertitle}}%
+      \tongji@cover@put{178.08}{440.16}{\usebox{\tongji@coverinfo}}%
     \fi
-    \end{tabular}
-  }
-  \vspace*{\fill}
-  \begin{center}
-    \sanhao\tongji@edate
-  \end{center}
-  
-} % end of english cover
-
-% \newcommand\tongji@underline[2][6em]{\hskip1pt\underline{\hb@xt@ #1{\hss#2\hss}}\hskip3pt}
+    \tongji@cover@center{751}{\songti\sanhao\tongji@cdate}%
+  }}%
+  \thispagestyle{empty}\null\clearpage
+  \endgroup}
+\newcommand{\engcover}{%
+  \begingroup
+  \sbox{\tongji@coverinfo}{\vtop{%
+    \hsize=\dimexpr\textwidth-83.662bp\relax\parindent=0pt\parskip=0pt
+    \rmfamily\fontsize{16bp}{31.2bp}\selectfont
+    \tongji@eauthortitle: \tongji@eauthor\par
+    \tongji@estudentnumbertitle: \tongji@studentnumber\par
+    \tongji@edepartmenttitle: \tongji@edepartment\par
+    \tongji@esubjectcategorytitle: \tongji@esubjectcategory\par
+    \iftongji@profession
+      \tongji@emajorfirsttitleprofession: \tongji@emajorfirst\par
+      \tongji@emajorsecondtitleprofession: \tongji@emajorsecond\par
+    \else
+      \tongji@emajorfirsttitle: \tongji@emajorfirst\par
+      \tongji@emajorsecondtitle: \tongji@emajorsecond\par
+    \fi
+    \tongji@eresearchfieldtitle: \tongji@eresearchfield\par
+    \tongji@esupervisortitle: \tongji@esupervisor\par
+    \ifx\tongji@eassosupervisor\@empty\else
+      \tongji@eassosupertitle: \tongji@eassosupervisor\par\fi
+    \ifx\tongji@ejointinstitution\@empty\else
+      \tongji@ejointinstitutiontitle: \tongji@ejointinstitution\par\fi
+  }}%
+  \sbox{\tongji@covertitle}{\vtop{\hsize=\textwidth\parindent=0pt\centering
+    \sffamily\bfseries\fontsize{18bp}{31.2bp}\selectfont\tongji@etitle\par
+    \ifx\tongji@efunds\@empty\else
+      \vskip6bp\normalfont\rmfamily\fontsize{16bp}{20bp}\selectfont\tongji@efunds\par\fi}}%
+  \tongji@cover@check
+  \AddToShipoutPictureFG*{\AtPageUpperLeft{\setlength{\unitlength}{1bp}%
+    \tongji@cover@center{148}{\includegraphics[width=100mm,height=26mm]{tongji-official-logo.jpeg}}%
+    \tongji@cover@put{0}{178.44}{\vtop{\hsize=\paperwidth\parindent=0pt\centering\rmfamily\fontsize{14bp}{31.2bp}\selectfont
+      \iftongji@doctor\tongji@eapplydoctor\else\tongji@eapplymaster\fi\par}}%
+    \tongji@cover@put{89.858}{306.24}{\usebox{\tongji@covertitle}}%
+    \tongji@cover@put{173.52}{406.56}{\usebox{\tongji@coverinfo}}%
+    \tongji@cover@center{740.79}{\rmfamily\sanhao\tongji@edate}%
+  }}%
+  \thispagestyle{empty}\null\clearpage
+  \endgroup}
 
 % 生成封面总命令
 \newcommand{\makecover}{
@@ -1040,29 +988,34 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % 生成新的 mathversion
+\newcounter{tongji@inputdepth}
 \newcounter{mathversioncount} % 定义计数器
 % 解决报错 Too many math alphabets used in version normal: 每章一个 mathversion
 \newcommand{\wyqymathversion}[1]{\tongjimathversion{#1}}
-\newcommand{\tongjimathversion}[1]{
-  \loop % 循环生成
-    \stepcounter{mathversioncount}
-    \expandafter\def\csname wyqymath\arabic{mathversioncount}\endcsname{}
-    \expandafter\DeclareMathVersion\expandafter{\csname wyqymath\arabic{mathversioncount}\endcsname}
+\newcommand{\tongjimathversion}[1]{%
+  \setcounter{mathversioncount}{0}%
+  \loop
+    \stepcounter{mathversioncount}%
+    \expandafter\DeclareMathVersion\expandafter{tongjimath\arabic{mathversioncount}}%
   \ifnum\value{mathversioncount}<#1\repeat
-  \setcounter{mathversioncount}{0} % 重置计数器
+  \setcounter{mathversioncount}{0}%
 }
-% 插入文件, 同时应用环境
 \newcommand{\wyqyinputfile}[2][\relax]{\tongjiinputfile[#1]{#2}}
-\newcommand{\tongjiinputfile}[2][\relax]{% 第一个参数为环境名称(可选), 第二个参数为插入文件名称(强制)
-  \stepcounter{mathversioncount}
-  \ifx#1\relax % 没有提供可选参数
-    {\expandafter\mathversion\expandafter{\csname wyqymath\arabic{mathversioncount}\endcsname}}
-      \input{#2} \mathversion{normal}
-  \else % 提供了可选参数
-    {\expandafter\mathversion\expandafter{\csname wyqymath\arabic{mathversioncount}\endcsname}}
-      \begin{#1} \input{#2} \end{#1}
-      \mathversion{normal}
+\newcommand{\tongjiinputfile}[2][\relax]{%
+  \stepcounter{tongji@inputdepth}%
+  \expandafter\edef\csname tongji@savedmath@\arabic{tongji@inputdepth}\endcsname{\math@version}%
+  \stepcounter{mathversioncount}%
+  \@ifundefined{mv@tongjimath\arabic{mathversioncount}}{%
+    \ClassError{tongjithesis}{Not enough math versions}{Increase the argument of tongjimathversion.}%
+  }{}%
+  \mathversion{tongjimath\arabic{mathversioncount}}%
+  \ifx#1\relax
+    \input{#2}%
+  \else
+    \begin{#1}\input{#2}\end{#1}%
   \fi
+  \mathversion{\csname tongji@savedmath@\arabic{tongji@inputdepth}\endcsname}%
+  \addtocounter{tongji@inputdepth}{-1}%
 }
 
 

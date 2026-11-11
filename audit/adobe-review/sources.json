@@ -1,0 +1,92 @@
+{
+  "adobe": {
+    "path": "official_ref_2510/同济大学研究生学位论文写作参考示例_adobe转.pdf",
+    "sha256": "7d087c634df46edf7465278b3a9ad9cb829758f88a7b95ba657e77007627ea28",
+    "pages": 20,
+    "metadata": {
+      "format": "PDF 1.6",
+      "title": "同济大学研究生学位论文写作规范",
+      "author": "vip",
+      "subject": "",
+      "keywords": "",
+      "creator": "Acrobat PDFMaker 26 Word 版",
+      "producer": "Adobe PDF Library 26.2.15",
+      "creationDate": "D:20261111212020+08'00'",
+      "modDate": "D:20261111212025+08'00'",
+      "trapped": "",
+      "encryption": null
+    }
+  },
+  "upstream": {
+    "path": "upstream/TongjiThesisForCS/样例论文.pdf",
+    "sha256": "fad78a793323b57d343fc68875105ea70a37ca19a3b8753ed7f0893ff33e1bba",
+    "pages": 29,
+    "metadata": {
+      "format": "PDF 1.5",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20220710)",
+      "creationDate": "D:20260108160316+08'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    }
+  },
+  "before": {
+    "path": "audit/adobe-review/before/thesis.pdf",
+    "sha256": "8fa7737421b882fb2f693c8e3e298f4800664b9abcb1e44971fc8826128a8e58",
+    "pages": 15,
+    "metadata": {
+      "format": "PDF 1.7",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20260317)",
+      "creationDate": "D:20261111184917+08'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    }
+  },
+  "after": {
+    "path": "template/output/texlive2026/thesis.pdf",
+    "sha256": "971bae2cf890789498a3cec3d5aa03968bbdb0c66a2c54f24264af65a3ac24c8",
+    "pages": 15,
+    "metadata": {
+      "format": "PDF 1.7",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20260317)",
+      "creationDate": "D:20261111213421+08'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    }
+  },
+  "proof": {
+    "path": "template/output/texlive2026/proof/adobe-proof.pdf",
+    "sha256": "0edb2bbef325724a874c357de32985a37e3d682d83fbb46db9bb248ed19138fc",
+    "pages": 8,
+    "metadata": {
+      "format": "PDF 1.7",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "LaTeX with hyperref",
+      "producer": "xdvipdfmx (20260317)",
+      "creationDate": "D:20261111213346+08'00'",
+      "modDate": "",
+      "trapped": "",
+      "encryption": null
+    }
+  }
+}
