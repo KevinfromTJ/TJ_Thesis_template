@@ -528,7 +528,7 @@
     format={\centering\bfseries\phfamily\sanhao[1]},
                                     % 控制章节标题的全局格式, 作用域为章节名字和随后的标题内容
                                     % 可以用于控制章节标题的对齐方式, 整体字体字号等格
-    nameformat=\relax,
+    nameformat={\xeCJKsetup{CJKecglue={\hskip0pt}}},
     numberformat=\relax,
     titleformat=\relax,
     lofskip=0pt,                    % 控制插图目录(.lof)中, 章之间的插图标题的距离
@@ -667,7 +667,7 @@
 \tongji@parse@keywords{ckeywords}
 \tongji@parse@keywords{ekeywords}
 \newcommand{\tongji@makeabstract}{%
-  \cleardoublepage % always openright for Abstract
+  \clearpage % Continuous electronic edition: no blank verso pages.
   \tongji@chapter*[]{\tongji@cabstractname}[\rmfamily\xparameter@heading@cother{\tongji@cabstractname}] % no tocline
   \pagenumbering{Roman}
   \hypersetup{pageanchor=true}
@@ -676,7 +676,7 @@
   \setbox0=\hbox{{\bfseries\songti\tongji@ckeyword@title}}
   \noindent\hangindent\wd0\hangafter1
     \box0\tongji@ckeywords
-  % \cleardoublepage % always openright for Abstract  
+  % \clearpage % Continuous electronic edition: no blank verso pages.  
   \begingroup
   \ctexset{chapter/format={\centering\bfseries\sffamily\sanhao[1]}}
   \tongji@chapter*[]{\tongji@eabstractname}[\rmfamily\xparameter@heading@eother{Abstract}] % no tocline
@@ -968,6 +968,24 @@
   \thispagestyle{empty}\null\clearpage
   \endgroup}
 
+% Shared spine: third physical page of the thesis and standalone spine.tex.
+% Use the actual title/author; explanatory arrows and notes are not thesis content.
+\newcommand{\makespine}{%
+  \clearpage
+  \newgeometry{top=50mm,bottom=50mm,left=31.7mm,right=31.7mm}%
+  \thispagestyle{empty}%
+  \noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[t][\textheight][t]{14bp}
+      \centering\fangsong\bfseries\fontsize{14bp}{16bp}\selectfont
+      \parindent=0pt\parskip=0pt
+      \tongji@ctitle\par
+      \vfill
+      \tongji@cauthor\par
+      \vfill
+      同济大学\par
+    \end{minipage}}%
+  \clearpage\restoregeometry}
+
 % 生成封面总命令
 \newcommand{\makecover}{
   \phantomsection
@@ -975,11 +993,12 @@
   \normalsize%
   \begin{titlepage}
     \chicover
-    \cleardoublepage
+    \clearpage
     \engcover
-    \cleardoublepage
+    \clearpage
   \end{titlepage}
   \normalsize
+  \makespine
   \tongji@makeabstract
   \let\@tabular\tongji@tabular}
 

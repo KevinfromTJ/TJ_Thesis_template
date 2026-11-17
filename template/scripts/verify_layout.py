@@ -100,8 +100,26 @@ for marker in ['作者姓名','学院全称','导师姓名及职称','Author Nam
 assert not anon.metadata.get('author')
 assert '同济大学学位论文原创性声明' not in anon_text
 assert '个人简历、在读期间发表的学术成果' not in anon_text
-# Only the two reverse sides of the single-sided covers may be empty.
-assert [i+1 for i,p in enumerate(formal) if not p.get_text().strip()]==[2,4]
+# User-requested continuous edition: Chinese / English / spine, without blanks.
+for document in (formal, anon):
+    assert all(p.get_text().strip() for p in document)
+    assert '学术学位' in document[0].get_text()
+    assert 'A thesis submitted to' in document[1].get_text()
+    spine_text = ''.join(document[2].get_text().split())
+    assert '同济大学' in spine_text and '学位论文中文题目' in spine_text
+    assert '摘要' in document[3].get_text()
+
+# Chapter label must have no extra CJK/Latin glue: 第(16bp), digit(8bp), 章.
+chapter_page = next(p for p in formal if header(p).startswith('第1章'))
+raw_lines = [l for b in chapter_page.get_text('rawdict')['blocks'] for l in b.get('lines',[])]
+label = next(l for l in raw_lines if 110 < l['spans'][0]['origin'][1] < 125
+             and l['spans'][0]['chars'][0]['c'] == '第')
+chars = [c for s in label['spans'] for c in s['chars']]
+assert ''.join(c['c'] for c in chars[:3]) == '第1章'
+assert abs(chars[1]['origin'][0]-chars[0]['origin'][0]-16) < 0.03
+assert abs(chars[2]['origin'][0]-chars[1]['origin'][0]-8) < 0.03
+assert all('SimHei' in s['font'] and abs(s['size']-16)<0.01 for s in label['spans'])
+assert '论文封面说明' not in formal_text
 for name in ['thesis','thesis_anonymous','spine','tests/layout']:
     log = (out/f'{name}.log').read_text()
     assert not re.search(r'Overfull|Undefined control sequence|Missing character:|undefined references|undefined citations|headheight is too small|footskip is too small',log),name
