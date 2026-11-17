@@ -65,3 +65,6 @@ Python 核验需 `pymupdf`。`tests/layout.tex` 含刻意扩展的摘要、目�
 XeLaTeX 是实际编译引擎，TeX Live 是包含该引擎和宏包的发行版，latexmk 只是构建调度器；`latexmk` 不意味着使用 pdfLaTeX。新版日志确认 `preloaded format=xelatex`，参考文献使用同一发行版的 Biber 2.22。
 
 [用于人工对照的两份 PDF 与页序号表](../compare/README.md)。旧 `build.sh` 使用当前 PATH，未修改系统默认环境。
+
+
+2026-11-17细节更新：页眉线0.72bp；第3页书脊保留0.75bp矩形框，框内仿宋四号加粗、16bp行距；章号内部每侧留2bp小间隔，数字同为黑体三号。公式编号和 `\eqref` 使用中文全角括号。图题在下（段前6bp/后12bp），表题在上（段前后6bp），两者宋体五号、居中、单倍行距，序号与名称间距10.5bp。

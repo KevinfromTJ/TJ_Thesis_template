@@ -84,7 +84,7 @@ reference_continuations = [l for l in refs if not text(l).startswith('[')]
 assert reference_continuations
 assert all(abs(l['bbox'][0]-left-21)<0.05 for l in reference_continuations)
 all_text = '\n'.join(p.get_text() for p in pdf)
-assert '(A1)' in all_text
+assert '（A1）' in all_text
 assert '图A1' in all_text.replace(' ','').replace('\n','')
 assert '表A1' in all_text.replace(' ','').replace('\n','')
 assert 'SMITH J, DOE J.' in all_text
@@ -109,17 +109,27 @@ for document in (formal, anon):
     assert '同济大学' in spine_text and '学位论文中文题目' in spine_text
     assert '摘要' in document[3].get_text()
 
-# Chapter label must have no extra CJK/Latin glue: 第(16bp), digit(8bp), 章.
+# Chapter label must have no extra CJK/Latin glue: 第(16bp) + 2bp, digit(8bp) + 2bp, 章.
 chapter_page = next(p for p in formal if header(p).startswith('第1章'))
 raw_lines = [l for b in chapter_page.get_text('rawdict')['blocks'] for l in b.get('lines',[])]
 label = next(l for l in raw_lines if 110 < l['spans'][0]['origin'][1] < 125
              and l['spans'][0]['chars'][0]['c'] == '第')
 chars = [c for s in label['spans'] for c in s['chars']]
 assert ''.join(c['c'] for c in chars[:3]) == '第1章'
-assert abs(chars[1]['origin'][0]-chars[0]['origin'][0]-16) < 0.03
-assert abs(chars[2]['origin'][0]-chars[1]['origin'][0]-8) < 0.03
+assert abs(chars[1]['origin'][0]-chars[0]['origin'][0]-18) < 0.03
+assert abs(chars[2]['origin'][0]-chars[1]['origin'][0]-10) < 0.03
 assert all('SimHei' in s['font'] and abs(s['size']-16)<0.01 for s in label['spans'])
 assert '论文封面说明' not in formal_text
+# User-reviewed visual details, checked against the rendered PDF.
+rule = next(d for d in chapter_page.get_drawings() if 70<d['rect'].y0<73)
+assert abs(rule['width']-0.72)<0.01
+frame = formal[2].get_drawings()
+assert len(frame)==4 and all(abs(d['width']-0.75)<0.01 for d in frame)
+assert '（2.1）' in formal_text and '式（2.1）' in formal_text
+spine_lines = lines(formal[2])
+assert all('FangSong' in s['font'] and abs(s['size']-14)<0.01
+           for l in spine_lines for s in l['spans'])
+check_leading(spine_lines[:len('学位论文中文题目')],16)
 for name in ['thesis','thesis_anonymous','spine','tests/layout']:
     log = (out/f'{name}.log').read_text()
     assert not re.search(r'Overfull|Undefined control sequence|Missing character:|undefined references|undefined citations|headheight is too small|footskip is too small',log),name

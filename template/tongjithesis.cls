@@ -365,7 +365,7 @@
   \fancyhead[\xparameter@heading@even]{\normalfont\songti\wuhao\xparameter@heading@mainright}
   \fancyfoot{}
   \fancyfoot[C]{\tongji@pagenumber}
-  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\headrulewidth}{0.72bp}
   \renewcommand{\footrulewidth}{0pt}}
 
 % 页眉页脚同时显示, 且左右相同 (可选择是否页眉居中)
@@ -375,7 +375,7 @@
   \fancyhead[\xparameter@heading@even]{\psfamily\wuhao\xparameter@heading@cother{\appendixname}}
   \fancyfoot{}
   \fancyfoot[C]{\tongji@pagenumber}
-  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\headrulewidth}{0.72bp}
   \renewcommand{\footrulewidth}{0pt}}
 
 % 分段使用样式
@@ -438,6 +438,8 @@
 
 % 允许太长的公式断行, 分页等
 \allowdisplaybreaks[4]
+\renewcommand{\eqref}[1]{\textup{\songti（\ref{#1}）}}
+\renewcommand{\tagform@}[1]{\maketag@@@{\songti（\ignorespaces#1\unskip\@@italiccorr）}}
 \renewcommand\theequation{\ifnum \c@chapter>\z@ \thechapter.\fi\@arabic\c@equation}
 
 % 公式距前后文的距离由 4 个参数控制, 参见 \cs{normalsize} 的定义
@@ -475,7 +477,7 @@
 \let\old@tabular\@tabular
 \def\tongji@tabular{\wuhao[1.5]\old@tabular}
 % 注: \DeclareCaptionLabelFormat 来自subcaption包
-\DeclareCaptionLabelFormat{tongji}{{\wuhao[1.5]\normalfont #1~#2}}
+\DeclareCaptionLabelFormat{tongji}{{\normalfont\songti\wuhao[1]#1~#2}}
 \DeclareCaptionLabelSeparator{tongji}{\hspace{1em}}
 \DeclareCaptionFont{tongji}{\normalfont\songti\wuhao[1]}
 \captionsetup{labelformat=tongji,labelsep=tongji,font=tongji,justification=centering,singlelinecheck=false}
@@ -528,7 +530,7 @@
     format={\centering\bfseries\phfamily\sanhao[1]},
                                     % 控制章节标题的全局格式, 作用域为章节名字和随后的标题内容
                                     % 可以用于控制章节标题的对齐方式, 整体字体字号等格
-    nameformat={\xeCJKsetup{CJKecglue={\hskip0pt}}},
+    nameformat={\xeCJKsetup{CJKecglue={\hskip2bp}}},
     numberformat=\relax,
     titleformat=\relax,
     lofskip=0pt,                    % 控制插图目录(.lof)中, 章之间的插图标题的距离
@@ -974,6 +976,9 @@
   \clearpage
   \newgeometry{top=50mm,bottom=50mm,left=31.7mm,right=31.7mm}%
   \thispagestyle{empty}%
+  % Reference p.8: narrow frame, with the 50mm text clearance inside it.
+  \AddToShipoutPictureFG*{\AtPageUpperLeft{\setlength{\unitlength}{1bp}%
+    \put(281.138,-730){\linethickness{0.75bp}\framebox(33,658){}}}}%
   \noindent\makebox[\textwidth][c]{%
     \begin{minipage}[t][\textheight][t]{14bp}
       \centering\fangsong\bfseries\fontsize{14bp}{16bp}\selectfont
