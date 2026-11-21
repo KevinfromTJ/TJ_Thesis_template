@@ -481,8 +481,14 @@
 \DeclareCaptionLabelSeparator{tongji}{\hspace{1em}}
 \DeclareCaptionFont{tongji}{\normalfont\songti\wuhao[1]}
 \captionsetup{labelformat=tongji,labelsep=tongji,font=tongji,justification=centering,singlelinecheck=false}
-\captionsetup[table]{position=top,belowskip=6bp,aboveskip=6bp}
-\captionsetup[figure]{position=bottom,belowskip=12bp,aboveskip=6bp}
+% Word object paragraphs contribute line-box space in addition to caption spacing.
+% Keep caption text single-spaced; expose the visual compensation for review.
+\newlength{\tongjifigureobjectgap}
+\setlength{\tongjifigureobjectgap}{6bp} % Adobe p.14: bottom-to-caption baseline ~20.5bp.
+\newlength{\tongjitableobjectgap}
+\setlength{\tongjitableobjectgap}{3bp} % Provisional: no official rendered table example.
+\captionsetup[table]{position=top,belowskip=6bp,aboveskip=\dimexpr6bp+\tongjitableobjectgap\relax}
+\captionsetup[figure]{position=bottom,belowskip=12bp,aboveskip=\dimexpr6bp+\tongjifigureobjectgap\relax}
 \captionsetup[sub]{font=tongji,skip=6bp}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
 \renewcommand{\thesubtable}{(\alph{subtable})}
