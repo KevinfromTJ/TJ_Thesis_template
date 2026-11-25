@@ -154,6 +154,9 @@ for page in [p for p in pdf if header(p)=='目录']:
             if not dots:
                 continue
             lastdot = dots[-1]
+            if len(dots)>10:
+                xs = [cs[i]['origin'][0] for i in dots[-9:]]
+                assert all(abs(b-a-5.28)<0.03 for a,b in zip(xs,xs[1:])), xs
             digits = [c for c in cs[lastdot+1:] if c['c'].isdigit()]
             if digits:
                 assert digits[0]['bbox'][0]-cs[lastdot]['bbox'][2]<5

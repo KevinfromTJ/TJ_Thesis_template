@@ -638,18 +638,18 @@
 % 研究生学位论文写作指南中规定: 目录中的章标题行居左书写, 一级节标题行缩进 1 个汉字符(2个字符), 二级节标题行缩进 2 个汉字符(4个字符)
 \RequirePackage{titletoc}
 \contentsmargin{2.5em}
-% Continue leaders through the unused part of the right-aligned page box.
+% One continuous leader run avoids a phase gap at the former page-box seam.
 \newcommand{\tongji@tocpage}{%
-  \hb@xt@\@pnumwidth{\dotfill\thecontentspage}\hspace*{-\@pnumwidth}}
+  \nobreak\dotfill\thecontentspage\hspace*{-\@pnumwidth}}
 \titlecontents{chapter}[0em]{\filright}%
     {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\tongji@tocpage}[\addvspace{0pt}]
 \titlecontents{section}[2em]{\addvspace{0pt}}%
     {\songti\fontsize{12bp}{18bp}\selectfont \thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\tongji@tocpage}[\addvspace{0pt}]
 \titlecontents{subsection}[4em]{\addvspace{0pt}}%
     {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\tongji@tocpage}[\addvspace{0pt}]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 论文摘要设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -750,7 +750,7 @@
       \clearpage}
   \titlecontents{#1}[0em]{\filright}%设定索引样式
     {\songti\xiaosi\thecontentslabel\enspace}%
-      {\songti\xiaosi}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
+      {\songti\xiaosi}{\tongji@tocpage}[\addvspace{0pt}]
   \contentsuse{#1}{\csname ext@#1\endcsname}
 }
 
