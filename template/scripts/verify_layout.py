@@ -130,6 +130,33 @@ spine_lines = lines(formal[2])
 assert all('FangSong' in s['font'] and abs(s['size']-14)<0.01
            for l in spine_lines for s in l['spans'])
 check_leading(spine_lines[:len('学位论文中文题目')],16)
+# Section/subsection adjacency must retain Word-style paragraph separation.
+found_adjacent = False
+for page in pdf:
+    ls = lines(page)
+    sub = next((l for l in ls if text(l)=='二级目录缩进检查'
+                and l['spans'][0]['size']>13),None)
+    if sub is None:
+        continue
+    section = [l for l in ls if text(l).startswith('目录续页检查')
+               and l['spans'][0]['size']>14 and baseline(l)<baseline(sub)]
+    if section:
+        assert abs(baseline(sub)-baseline(section[-1])-42.84)<0.05
+        found_adjacent = True
+        break
+assert found_adjacent
+# Leaders must reach the page digits, including entries with multi-digit pages.
+for page in [p for p in pdf if header(p)=='目录']:
+    for block in page.get_text('rawdict')['blocks']:
+        for line in block.get('lines',[]):
+            cs = [c for span in line['spans'] for c in span['chars']]
+            dots = [i for i,c in enumerate(cs) if c['c']=='.']
+            if not dots:
+                continue
+            lastdot = dots[-1]
+            digits = [c for c in cs[lastdot+1:] if c['c'].isdigit()]
+            if digits:
+                assert digits[0]['bbox'][0]-cs[lastdot]['bbox'][2]<5
 for name in ['thesis','thesis_anonymous','spine','tests/layout']:
     log = (out/f'{name}.log').read_text()
     assert not re.search(r'Overfull|Undefined control sequence|Missing character:|undefined references|undefined citations|headheight is too small|footskip is too small',log),name

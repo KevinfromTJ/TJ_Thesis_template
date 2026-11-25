@@ -119,3 +119,14 @@ git status --short
 - 两个可调长度分别为 `\tongjifigureobjectgap`（默认6bp）、`\tongjitableobjectgap`（默认3bp）。源码中caption的对象侧skip为“规定的6bp＋对应补偿”，没有把图表题文字改为1.25倍行距。图题后12bp、表题前6bp和一个字符的序号间隔保留。
 
 正式版14页、隐名版11页、独立书脊1页重新编译，19页布局回归通过；图形顶部位置在样例中保持一致。当前[PDF](template/output/texlive2026/thesis.pdf)及[图表留白修订前后对照](compare/08_图表与题注间距_修订前后对照.pdf)可用于复核。并排文件保留原尺寸，学校示例图与本地占位图内容不同。Git提交信息：`fix: add object line-box clearance around figure and table captions`。
+
+
+### 2026-11-25：二级节标题与目录引导点
+
+用户复核指出二级节标题（x.x.x）留白偏紧、目录引导点未填满到页码。本轮修改 `template/tongjithesis.cls`：
+
+- 二级节标题保持黑体四号14bp，Word要求段前12bp、段后6bp。此前源码照抄12/6，但标题单倍行距被直接设成14bp，CTeX渲染不足以体现Word字体行盒；现将该行盒设为24bp、TeX段后skip映射为12.16bp，段前参数仍12bp。正文→二级标题的基线间隔由26bp增为36bp，二级标题→正文由26bp增为32.16bp。此处skip是TeX实现参数，不能直接等同于Word段落面板的段距。
+- 二级标题紧接一级标题时，CTeX会吞掉段前间距，另补6.68bp；回归文档该组合的标题基线间隔42.84bp，与Adobe第12页同类组合一致。不是为所有Word段落组合宣称逐像素一致；三级节标题本轮未调整。
+- 目录原先为页码固定预留2.5em且盒内右对齐，单数字前出现大块空白。现在引导点继续填充页码盒内未占用部分，保留页码右对齐、多位页码空间和标题换行边界；末点到数字只留自然点距。
+
+验证：正式版14页、隐名版11页、书脊1页成功编译。扩展回归由19页增至20页，原有布局检查通过；新增PDF检查覆盖相邻一／二级标题距离、目录末点到页码的间距（含多位页码）。[新版PDF](template/output/texlive2026/thesis.pdf)、[二级标题及目录修订前后对照](compare/09_二级节标题与目录引导点_修订前后.pdf)。Git提交信息：`fix: restore subsection clearance and extend TOC leaders to page numbers`。

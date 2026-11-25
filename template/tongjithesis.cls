@@ -551,11 +551,11 @@
     aftername=\hskip\ccwd,
 	numberformat=\relax,
   },
-  subsection={
+  subsection={ % Word 12/6bp paragraph spacing plus single-line font box
     afterindent=true,
     beforeskip={12bp},
-    afterskip={6bp},
-    format={\phfamily\sihao[1]},
+    afterskip={12.16bp},
+    format={\phfamily\fontsize{14bp}{24bp}\selectfont},
     aftername=\hskip\ccwd,
     numberformat=\relax,
   },
@@ -573,6 +573,10 @@
 % CTeX suppresses section beforeskip after a chapter. Word retains the
 % difference between section-before (24bp) and chapter-after (18bp).
 \pretocmd{\section}{\if@nobreak\vskip6bp\relax\fi}{}{\ClassError{tongjithesis}{Cannot patch section spacing}{Check the CTeX version.}}
+
+% Preserve the Word before/after spacing when a subsection follows a section
+% directly; CTeX otherwise discards subsection beforeskip in this case.
+\pretocmd{\subsection}{\if@nobreak\vskip6.68bp\relax\fi}{}{\ClassError{tongjithesis}{Cannot patch subsection spacing}{Check the CTeX version.}}
 
 % 目录调教:
 % \NewDocumentCommand 替代了 \newcommand, 它是 xparse 宏包的主要命令, 可以定义参数个数, 类型等
@@ -634,15 +638,18 @@
 % 研究生学位论文写作指南中规定: 目录中的章标题行居左书写, 一级节标题行缩进 1 个汉字符(2个字符), 二级节标题行缩进 2 个汉字符(4个字符)
 \RequirePackage{titletoc}
 \contentsmargin{2.5em}
+% Continue leaders through the unused part of the right-aligned page box.
+\newcommand{\tongji@tocpage}{%
+  \hb@xt@\@pnumwidth{\dotfill\thecontentspage}\hspace*{-\@pnumwidth}}
 \titlecontents{chapter}[0em]{\filright}%
     {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
 \titlecontents{section}[2em]{\addvspace{0pt}}%
     {\songti\fontsize{12bp}{18bp}\selectfont \thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
 \titlecontents{subsection}[4em]{\addvspace{0pt}}%
     {\songti\fontsize{12bp}{18bp}\selectfont\thecontentslabel\enspace}%
-        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\contentspage}[\addvspace{0pt}]
+        {\songti\fontsize{12bp}{18bp}\selectfont}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 论文摘要设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -743,7 +750,7 @@
       \clearpage}
   \titlecontents{#1}[0em]{\filright}%设定索引样式
     {\songti\xiaosi\thecontentslabel\enspace}%
-      {\songti\xiaosi}{\dotfill\contentspage}[\addvspace{0pt}]
+      {\songti\xiaosi}{\dotfill\tongji@tocpage}[\addvspace{0pt}]
   \contentsuse{#1}{\csname ext@#1\endcsname}
 }
 

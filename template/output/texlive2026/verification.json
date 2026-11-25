@@ -22,7 +22,7 @@
     48
   ],
   "reference_hanging_indent_bp": 21,
-  "regression_pages": 19,
+  "regression_pages": 20,
   "headers": [
     "摘要",
     "摘要",
@@ -30,6 +30,7 @@
     "Abstract",
     "目录",
     "目录",
+    "第1章正文布局测试",
     "第1章正文布局测试",
     "第1章正文布局测试",
     "第1章正文布局测试",
@@ -63,7 +64,8 @@
     "10",
     "11",
     "12",
-    "13"
+    "13",
+    "14"
   ],
   "formal_pages": 14,
   "anonymous_pages": 11,
