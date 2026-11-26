@@ -163,3 +163,12 @@ git status --short
 - [多行标题／题注与续页留白样例PDF（两页）](template/output/texlive2026/tests/multiline.pdf)
 
 Git提交信息：`fix: align continuation-page clearance and multiline heading leading`。
+
+
+### 2026-11-26：主论文中补充跨页正文与多行图表题
+
+按用户要求，在 `data/chap01.tex` 补充通用排版观察文字，让第一章普通正文自然跨页，没有手动分页或撑高空白；在 `data/chap02.tex` 将图题扩充为3行、表题扩充为2行，沿用当前题注格式。全部新增文字和表格数值均为占位示例。
+
+当前正式PDF共15页、隐名版12页；物理第7—8页为第一章，**第8页可看普通正文续页页首，第9页可看多行图题与表题**。正文续页首行基线99bp，图题和表题内部基线差13.65bp。已有核验通过。本轮仅改主样例内容及配套页数检查；`compare/07` 已更新。独立 `tests/multiline.pdf` 继续保留。
+
+Git提交信息：`docs: demonstrate flowing body text and multiline captions in thesis sample`。
