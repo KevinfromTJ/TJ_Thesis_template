@@ -87,7 +87,11 @@ all_text = '\n'.join(p.get_text() for p in pdf)
 assert '（A1）' in all_text
 assert '图A1' in all_text.replace(' ','').replace('\n','')
 assert '表A1' in all_text.replace(' ','').replace('\n','')
-assert 'SMITH J, DOE J.' in all_text
+assert 'Smith J, Doe J.' in all_text
+assert 'Chen J.' in all_text
+assert 'SMITH J' not in all_text
+for placeholder in ('S.l.', 's.n.', '出版地不详', '出版者不详'):
+    assert placeholder not in all_text
 assert '//' in all_text
 
 anon = pymupdf.open(out/'thesis_anonymous.pdf')
