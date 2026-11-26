@@ -77,3 +77,6 @@ XeLaTeX 是实际编译引擎，TeX Live 是包含该引擎和宏包的发行版
 
 
 2026-11-26：参考文献按用户要求采用正常姓名大小写（如 `Chen J`），关闭出版信息不详的占位。当前配置为 `gbnamefmt=lowercase,gbpub=false`；`lowercase`在此表示保留Bib输入大小写。作者建议写作 `author={Chen, Jun and Shen, Wei}`，不要在Bib中预先写成全大写。真实出版地/出版者仍正常显示。
+
+
+2026-11-26补充：正文续页首行按学校示例额外页首留白校准为距顶99bp，正文仍为固定20bp行距、段前段后0。章首页原有标题起点保持；多行章标题使用16bp字号/26bp行盒，图表题10.5bp字号/13.65bp行盒。后两者为Word单倍行距的近似实现，须结合多行样例目视核对。`./build-2026.sh test` 同时生成 `output/texlive2026/tests/multiline.pdf`，含长标题、长图表题和正文续页；旧版系统 `build.sh` 不自动生成这个测试文件。

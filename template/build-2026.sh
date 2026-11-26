@@ -11,7 +11,7 @@ case "${1:-build}" in
   build) exec latexmk -outdir=output/texlive2026 thesis.tex ;;
   anonymous) exec latexmk -outdir=output/texlive2026 thesis_anonymous.tex ;;
   spine) exec latexmk -outdir=output/texlive2026 spine.tex ;;
-  test) exec latexmk -outdir=output/texlive2026/tests tests/layout.tex ;;
+  test) exec latexmk -outdir=output/texlive2026/tests tests/layout.tex tests/multiline.tex ;;
   all) latexmk -outdir=output/texlive2026 thesis.tex thesis_anonymous.tex spine.tex ;;
   *) printf '用法：%s [build|anonymous|spine|test|all]\n' "$0" >&2; exit 2 ;;
 esac

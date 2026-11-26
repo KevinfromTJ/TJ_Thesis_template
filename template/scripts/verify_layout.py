@@ -164,7 +164,19 @@ for page in [p for p in pdf if header(p)=='目录']:
             digits = [c for c in cs[lastdot+1:] if c['c'].isdigit()]
             if digits:
                 assert digits[0]['bbox'][0]-cs[lastdot]['bbox'][2]<5
-for name in ['thesis','thesis_anonymous','spine','tests/layout']:
+# Multi-line font boxes and the ordinary continuation-page top clearance.
+multi = pymupdf.open(out/'tests/multiline.pdf')
+mlines = lines(multi[0])
+chapter_lines = [l for l in mlines if 100<baseline(l)<160]
+ys = sorted({round(baseline(l),3) for l in chapter_lines})
+assert len(ys)==2 and abs(ys[1]-ys[0]-26)<0.03,ys
+for term in ('长图题','长表题'):
+    ys = sorted({round(baseline(l),3) for l in mlines if term in text(l)})
+    assert len(ys)==2 and abs(ys[1]-ys[0]-13.65)<0.03,(term,ys)
+continuation = [l for l in lines(multi[1]) if text(l).startswith('这是正文续页')]
+assert abs(baseline(continuation[0])-99)<0.03
+assert abs(baseline(continuation[1])-baseline(continuation[0])-20)<0.03
+for name in ['thesis','thesis_anonymous','spine','tests/layout','tests/multiline']:
     log = (out/f'{name}.log').read_text()
     assert not re.search(r'Overfull|Undefined control sequence|Missing character:|undefined references|undefined citations|headheight is too small|footskip is too small',log),name
 report = {'status':'PASS','geometry_mm':{k:round(values[k]*pt_to_mm,6) for k in expected_mm},

@@ -266,6 +266,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 文章字体设置 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Word sample continuation page: first text baseline 99bp = top 72bp + 27bp.
+\setlength{\topskip}{27bp}
 % 正文小四号 (12bp) 字, 行距为固定值 20 bp
 \renewcommand\normalsize{%
   \@setfontsize\normalsize{12bp}{20bp}%
@@ -477,9 +479,9 @@
 \let\old@tabular\@tabular
 \def\tongji@tabular{\wuhao[1.5]\old@tabular}
 % 注: \DeclareCaptionLabelFormat 来自subcaption包
-\DeclareCaptionLabelFormat{tongji}{{\normalfont\songti\wuhao[1]#1~#2}}
+\DeclareCaptionLabelFormat{tongji}{{\normalfont\songti\fontsize{10.5bp}{13.65bp}\selectfont#1~#2}}
 \DeclareCaptionLabelSeparator{tongji}{\hspace{1em}}
-\DeclareCaptionFont{tongji}{\normalfont\songti\wuhao[1]}
+\DeclareCaptionFont{tongji}{\normalfont\songti\fontsize{10.5bp}{13.65bp}\selectfont}
 \captionsetup{labelformat=tongji,labelsep=tongji,font=tongji,justification=centering,singlelinecheck=false}
 % Word object paragraphs contribute line-box space in addition to caption spacing.
 % Keep caption text single-spaced; expose the visual compensation for review.
@@ -530,10 +532,10 @@
   chapter={ % 章标题
     afterindent=true,               % 设置章节标题后首段的缩进
     pagestyle={tongji@headingmain}, % 保证章首页的页眉正确
-    beforeskip={17.52bp},            % Word段前24bp映射到CTeX行盒；Adobe标题基线117.48bp
+    beforeskip={-7.525bp},            % Word段前24bp映射到CTeX行盒；Adobe标题基线117.48bp
     aftername=\hskip\ccwd,          % 控制章节编号与标题内容之间的距离, 其中 \ccwd 为一个汉字的宽度
     afterskip={23.805bp},             % 补偿标题行盒，保留后续正文起点
-    format={\centering\bfseries\phfamily\sanhao[1]},
+    format={\centering\bfseries\phfamily\fontsize{16bp}{26bp}\selectfont},
                                     % 控制章节标题的全局格式, 作用域为章节名字和随后的标题内容
                                     % 可以用于控制章节标题的对齐方式, 整体字体字号等格
     nameformat={\xeCJKsetup{CJKecglue={\hskip2bp}}},
@@ -693,7 +695,7 @@
     \box0\tongji@ckeywords
   % \clearpage % Continuous electronic edition: no blank verso pages.  
   \begingroup
-  \ctexset{chapter/format={\centering\bfseries\sffamily\sanhao[1]}}
+  \ctexset{chapter/format={\centering\bfseries\sffamily\fontsize{16bp}{26bp}\selectfont}}
   \tongji@chapter*[]{\tongji@eabstractname}[\rmfamily\xparameter@heading@eother{Abstract}] % no tocline
   \tongji@eabstract
   \vskip12bp
@@ -988,6 +990,7 @@
 \newcommand{\makespine}{%
   \clearpage
   \newgeometry{top=50mm,bottom=50mm,left=31.7mm,right=31.7mm}%
+  \setlength{\topskip}{12pt}% Spine minipage uses the original top strut.
   \thispagestyle{empty}%
   % Reference p.8: narrow frame, with the 50mm text clearance inside it.
   \AddToShipoutPictureFG*{\AtPageUpperLeft{\setlength{\unitlength}{1bp}%
@@ -1002,7 +1005,7 @@
       \vfill
       同济大学\par
     \end{minipage}}%
-  \clearpage\restoregeometry}
+  \clearpage\restoregeometry\setlength{\topskip}{27bp}}
 
 % 生成封面总命令
 \newcommand{\makecover}{
